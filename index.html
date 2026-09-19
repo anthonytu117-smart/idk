@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>那群跟我變美(發酒癲）的朋友點名簿</title>
+  <title>那群跟我變美(發酒癲）的朋友回憶錄</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- PeerJS CDN for Realtime Cross-Device Sync -->
@@ -13,22 +13,25 @@
       theme: {
         extend: {
           colors: {
-            muji: {
-              bg: '#F7F5F0',
-              card: '#FFFFFF',
-              border: '#E3DFD5',
-              text: '#333333',
-              muted: '#7F7B75',
-              accent: '#8C7A6B',
-              accentLight: '#F0EAE1',
-              sober: '#6E8B74',      // 清醒變美
-              leave: '#D99B00',      // 喝茫請假
-              late: '#C86D51',       // 微醺遲到
-              absent: '#A94442'      // 發酒癲失聯
+            japandi: {
+              bg: '#F7F4EF',          // 暖米白/棉麻色
+              card: '#FAF8F5',        // 卡片底色
+              cardHover: '#F2EDE4',   // 卡片懸停
+              border: '#E8E2D8',      // 細微邊框
+              text: '#2D2B28',        // 胡桃木深黑
+              muted: '#8C857B',      // 柔和灰褐
+              accent: '#3D3A36',     // 主要深色按鈕
+              primary: '#8B263E',    // 酒紅特色點綴
+              primaryLight: '#F7EBEF',
+              sober: '#4A6B5D',      // ✨ 清醒變美
+              leave: '#C68B29',      // 🍹 喝茫請假
+              late: '#D96B43',       // 🥴 微醺遲到
+              absent: '#B83A3A'      // 🤪 發酒癲失聯
             }
           },
           fontFamily: {
-            sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Hiragino Sans GB"', '"Microsoft JhengHei"', sans-serif],
+            sans: ['"PingFang TC"', '"Hiragino Sans GB"', '"Microsoft JhengHei"', '-apple-system', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
           }
         }
       }
@@ -36,53 +39,54 @@
   </script>
   <style>
     body {
-      background-color: #F7F5F0;
-      color: #333333;
+      background-color: #F7F4EF;
+      color: #2D2B28;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
     .long-press-active {
-      transform: scale(0.96);
-      transition: transform 0.1s ease;
+      transform: scale(0.97);
+      transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .progress-bar {
       transition: width 0.5s linear;
     }
-    /* Custom Scrollbar for MUJI aesthetics */
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 4px;
+      height: 4px;
     }
     ::-webkit-scrollbar-track {
-      background: #F7F5F0;
+      background: #F7F4EF;
     }
     ::-webkit-scrollbar-thumb {
-      background: #D5D0C5;
-      border-radius: 3px;
+      background: #D8D0C5;
+      border-radius: 2px;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans">
+<body class="min-h-screen flex flex-col font-sans antialiased pb-12">
 
   <!-- Top Header -->
-  <header class="bg-white border-b border-muji-border sticky top-0 z-30 shadow-sm">
-    <div class="max-w-4xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-2">
-      <div class="flex items-center space-x-2">
-        <span class="text-2xl">🍷</span>
+  <header class="bg-[#FAF8F5] border-b border-japandi-border sticky top-0 z-30 shadow-sm">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-2">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-japandi-primary text-white flex items-center justify-center text-xl shadow-sm">
+          🍷
+        </div>
         <div>
-          <h1 class="text-lg font-bold tracking-wide text-muji-text">那群跟我變美(發酒癲）的朋友點名簿</h1>
-          <p class="text-xs text-muji-muted">MUJI Style • 跨裝置即時雲端點名</p>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight text-japandi-text">那群跟我變美(發酒癲）的朋友回憶錄</h1>
+          <p class="text-[11px] text-japandi-muted font-medium tracking-wider uppercase">Beauty & Drunk Friend Tracker</p>
         </div>
       </div>
       
       <!-- Sync Room Box -->
-      <div class="flex items-center space-x-2 bg-muji-bg px-3 py-1.5 rounded-lg border border-muji-border text-xs">
-        <div class="flex items-center space-x-1">
-          <span id="syncStatusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block animate-pulse"></span>
-          <span class="text-muji-muted font-medium">房間:</span>
-          <span id="roomIdDisplay" class="font-mono font-bold text-muji-text">建立中...</span>
+      <div class="flex items-center space-x-2 bg-japandi-bg px-3 py-1.5 rounded-xl border border-japandi-border text-xs">
+        <div class="flex items-center space-x-1.5">
+          <span id="syncStatusDot" class="w-2 h-2 rounded-full bg-amber-400 inline-block animate-pulse"></span>
+          <span class="text-japandi-muted font-medium">房間:</span>
+          <span id="roomIdDisplay" class="font-mono font-bold text-japandi-text">建立中...</span>
         </div>
-        <button onclick="copyShareLink()" class="ml-2 bg-white px-2 py-1 rounded border border-muji-border hover:bg-muji-accentLight text-muji-accent font-medium transition">
+        <button onclick="copyShareLink()" class="ml-2 bg-white px-2.5 py-1 rounded-lg border border-japandi-border hover:bg-japandi-cardHover text-japandi-accent font-medium text-[11px] transition shadow-xs">
           複製共享連結
         </button>
       </div>
@@ -90,89 +94,98 @@
   </header>
 
   <!-- Navigation Tabs -->
-  <div class="bg-white border-b border-muji-border">
-    <div class="max-w-4xl mx-auto px-4 flex space-x-8 text-sm font-medium">
-      <button id="tab1Btn" onclick="switchTab(1)" class="py-3 border-b-2 border-muji-accent text-muji-accent font-semibold transition">
-        👥 1. 酒精閨蜜名單
-      </button>
-      <button id="tab2Btn" onclick="switchTab(2)" class="py-3 border-b-2 border-transparent text-muji-muted hover:text-muji-text transition">
-        📅 2. 變美與醉酒日曆
-      </button>
+  <div class="bg-[#FAF8F5] border-b border-japandi-border">
+    <div class="max-w-3xl mx-auto px-4">
+      <div class="flex p-1 bg-japandi-bg rounded-xl border border-japandi-border my-2 text-xs font-medium">
+        <button id="tab1Btn" onclick="switchTab(1)" class="flex-1 py-2 rounded-lg bg-white text-japandi-text font-bold shadow-xs transition flex items-center justify-center space-x-1.5">
+          <span>👥</span><span>朋友名冊</span>
+        </button>
+        <button id="tab2Btn" onclick="switchTab(2)" class="flex-1 py-2 rounded-lg text-japandi-muted hover:text-japandi-text transition flex items-center justify-center space-x-1.5">
+          <span>📅</span><span>酒瘋點名日曆</span>
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- Main Content Container -->
-  <main class="max-w-4xl mx-auto px-4 py-6 flex-1 w-full">
+  <main class="max-w-3xl mx-auto px-4 py-5 flex-1 w-full">
 
     <!-- PAGE 1: Friends Management -->
-    <section id="page1" class="space-y-6">
-      <div class="bg-white p-5 rounded-xl border border-muji-border shadow-sm">
-        <h2 class="text-base font-semibold mb-3 text-muji-text flex items-center">
-          <span class="mr-2">➕</span> 新增閨蜜成員
+    <section id="page1" class="space-y-5">
+      <!-- Add Member Box -->
+      <div class="bg-[#FAF8F5] p-5 rounded-2xl border border-japandi-border shadow-xs space-y-3">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-japandi-primary flex items-center space-x-1.5">
+          <span>📍</span><span>邀請酒友 / 閨蜜加入</span>
         </h2>
-        <div class="flex gap-2">
-          <input type="text" id="newMemberName" placeholder="輸入朋友暱稱（如：喝酒怪、酒後失憶王）" 
-                 class="flex-1 px-4 py-2.5 bg-muji-bg border border-muji-border rounded-lg text-sm focus:outline-none focus:border-muji-accent transition">
-          <button onclick="addMember()" class="bg-muji-accent text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 active:scale-95 transition">
-            新增成員
+        <div class="space-y-2">
+          <input type="text" id="newMemberName" placeholder="請輸入朋友暱稱（例如：喝酒奇俠、美妝小天才）" 
+                 class="w-full px-4 py-3 bg-japandi-bg border border-japandi-border rounded-xl text-sm text-japandi-text placeholder:text-japandi-muted focus:outline-none focus:border-japandi-accent transition">
+          <button onclick="addMember()" class="w-full bg-japandi-accent text-white py-3 rounded-xl text-sm font-semibold hover:opacity-95 active:scale-[0.99] transition shadow-xs flex items-center justify-center space-x-1">
+            <span>+</span><span>入冊加入</span>
           </button>
         </div>
       </div>
 
-      <div class="bg-white p-5 rounded-xl border border-muji-border shadow-sm">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-base font-semibold text-muji-text">👥 名單管理 (<span id="memberCount">0</span>人)</h2>
-          <span class="text-xs text-muji-muted">點擊可直接刪除成員</span>
+      <!-- Member List Box -->
+      <div class="bg-[#FAF8F5] p-5 rounded-2xl border border-japandi-border shadow-xs space-y-4">
+        <div class="flex justify-between items-center border-b border-japandi-border pb-3">
+          <div class="flex items-center space-x-2">
+            <h2 class="text-sm font-bold text-japandi-text">酒瘋閨蜜總覽</h2>
+            <span id="memberCountBadge" class="px-2 py-0.5 bg-japandi-bg border border-japandi-border rounded-md text-[11px] font-mono text-japandi-muted">0 位朋友</span>
+          </div>
+          <div class="flex space-x-2">
+            <button onclick="exportData()" class="text-xs text-japandi-muted hover:text-japandi-text flex items-center space-x-1 transition">
+              <span>📥</span><span>備份戰績</span>
+            </button>
+            <button onclick="document.getElementById('importFile').click()" class="text-xs text-japandi-muted hover:text-japandi-text flex items-center space-x-1 transition">
+              <span>📤</span><span>還原戰績</span>
+            </button>
+            <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(event)">
+          </div>
         </div>
-        <div id="memberList" class="flex flex-wrap gap-2.5">
-          <!-- Dynamically populated -->
+
+        <div id="memberList" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <!-- Dynamically populated card items -->
         </div>
       </div>
     </section>
 
     <!-- PAGE 2: Calendar & Roll Call -->
-    <section id="page2" class="space-y-6 hidden">
+    <section id="page2" class="space-y-5 hidden">
       <!-- Controls Header -->
-      <div class="bg-white p-4 rounded-xl border border-muji-border shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="bg-[#FAF8F5] p-4 rounded-2xl border border-japandi-border shadow-xs flex flex-col sm:flex-row justify-between items-center gap-3">
         <!-- Target Selection -->
-        <div class="flex items-center space-x-2 w-full md:w-auto">
-          <label class="text-xs font-semibold text-muji-muted whitespace-nowrap">查看對象：</label>
-          <select id="memberFilter" onchange="renderCalendar()" class="bg-muji-bg border border-muji-border px-3 py-1.5 rounded-lg text-sm text-muji-text focus:outline-none focus:border-muji-accent w-full">
+        <div class="flex items-center space-x-2 w-full sm:w-auto">
+          <label class="text-xs font-bold text-japandi-muted whitespace-nowrap">對象：</label>
+          <select id="memberFilter" onchange="renderCalendar()" class="bg-japandi-bg border border-japandi-border px-3 py-2 rounded-xl text-xs font-semibold text-japandi-text focus:outline-none w-full">
             <option value="ALL">全體成員總覽</option>
           </select>
         </div>
 
         <!-- Month Navigation -->
-        <div class="flex items-center space-x-3">
-          <button onclick="changeMonth(-1)" class="p-1.5 rounded-lg border border-muji-border hover:bg-muji-bg transition">👈</button>
-          <span id="currentMonthLabel" class="text-base font-bold text-muji-text font-mono">2026 年 09 月</span>
-          <button onclick="changeMonth(1)" class="p-1.5 rounded-lg border border-muji-border hover:bg-muji-bg transition">👉</button>
-        </div>
-
-        <!-- Export / Import -->
-        <div class="flex space-x-2">
-          <button onclick="exportData()" class="px-2.5 py-1.5 border border-muji-border rounded-lg text-xs font-medium text-muji-muted hover:bg-muji-bg transition">匯出 JSON</button>
-          <button onclick="document.getElementById('importFile').click()" class="px-2.5 py-1.5 border border-muji-border rounded-lg text-xs font-medium text-muji-muted hover:bg-muji-bg transition">匯入 JSON</button>
-          <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(event)">
+        <div class="flex items-center space-x-3 bg-japandi-bg px-3 py-1.5 rounded-xl border border-japandi-border">
+          <button onclick="changeMonth(-1)" class="text-xs font-bold text-japandi-muted hover:text-japandi-text px-1">◀</button>
+          <span id="currentMonthLabel" class="text-xs font-bold font-mono text-japandi-text">2026 年 09 月</span>
+          <button onclick="changeMonth(1)" class="text-xs font-bold text-japandi-muted hover:text-japandi-text px-1">▶</button>
         </div>
       </div>
 
       <!-- Long Press Guide -->
-      <div class="bg-muji-accentLight p-3 rounded-lg border border-muji-border text-xs text-muji-accent flex items-center justify-between">
-        <span>💡 <b>點名操作說明：</b>在下方日曆格子上記住<b>長按 0.5 秒</b>即可觸發醉酒變美點名！</span>
+      <div class="bg-japandi-primaryLight p-3 rounded-xl border border-japandi-primary/20 text-xs text-japandi-primary flex items-center justify-between">
+        <span>💡 <b>長按提示：</b>在日曆格子上<b>長按 0.5 秒</b>即可發動醉酒點名、備註與上傳照片！</span>
       </div>
 
       <!-- Calendar Grid -->
-      <div class="bg-white p-4 rounded-xl border border-muji-border shadow-sm">
+      <div class="bg-[#FAF8F5] p-4 rounded-2xl border border-japandi-border shadow-xs">
         <!-- Weekday Headers -->
-        <div class="grid grid-cols-7 gap-1 text-center font-semibold text-xs text-muji-muted py-2 border-b border-muji-border mb-2">
-          <div class="text-red-400">日</div>
+        <div class="grid grid-cols-7 gap-1 text-center font-bold text-xs text-japandi-muted py-2 border-b border-japandi-border mb-2">
+          <div class="text-japandi-absent">日</div>
           <div>一</div>
           <div>二</div>
           <div>三</div>
           <div>四</div>
           <div>五</div>
-          <div class="text-amber-600">六</div>
+          <div class="text-japandi-leave">六</div>
         </div>
 
         <!-- Days Cells -->
@@ -182,24 +195,24 @@
       </div>
 
       <!-- Monthly Stats -->
-      <div class="bg-white p-5 rounded-xl border border-muji-border shadow-sm">
-        <h3 class="text-sm font-semibold text-muji-text mb-3">📊 本月醉酒變美戰績統計</h3>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-          <div class="p-3 rounded-lg bg-emerald-50 border border-emerald-100">
-            <div class="text-xs text-emerald-700">✨ 清醒變美</div>
-            <div id="statSober" class="text-xl font-bold text-emerald-800 mt-1">0</div>
+      <div class="bg-[#FAF8F5] p-5 rounded-2xl border border-japandi-border shadow-xs space-y-3">
+        <h3 class="text-xs font-bold text-japandi-text uppercase tracking-wider">📊 本月醉酒戰績統計</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
+          <div class="p-3 rounded-xl bg-japandi-bg border border-japandi-border">
+            <div class="text-[11px] font-medium text-japandi-sober">✨ 清醒變美</div>
+            <div id="statSober" class="text-lg font-bold font-mono text-japandi-text mt-0.5">0</div>
           </div>
-          <div class="p-3 rounded-lg bg-amber-50 border border-amber-100">
-            <div class="text-xs text-amber-700">🍹 喝茫請假</div>
-            <div id="statLeave" class="text-xl font-bold text-amber-800 mt-1">0</div>
+          <div class="p-3 rounded-xl bg-japandi-bg border border-japandi-border">
+            <div class="text-[11px] font-medium text-japandi-leave">🍹 喝茫請假</div>
+            <div id="statLeave" class="text-lg font-bold font-mono text-japandi-text mt-0.5">0</div>
           </div>
-          <div class="p-3 rounded-lg bg-orange-50 border border-orange-100">
-            <div class="text-xs text-orange-700">🥴 微醺遲到</div>
-            <div id="statLate" class="text-xl font-bold text-orange-800 mt-1">0</div>
+          <div class="p-3 rounded-xl bg-japandi-bg border border-japandi-border">
+            <div class="text-[11px] font-medium text-japandi-late">🥴 微醺遲到</div>
+            <div id="statLate" class="text-lg font-bold font-mono text-japandi-text mt-0.5">0</div>
           </div>
-          <div class="p-3 rounded-lg bg-red-50 border border-red-100">
-            <div class="text-xs text-red-700">🤪 發酒癲失聯</div>
-            <div id="statAbsent" class="text-xl font-bold text-red-800 mt-1">0</div>
+          <div class="p-3 rounded-xl bg-japandi-bg border border-japandi-border">
+            <div class="text-[11px] font-medium text-japandi-absent">🤪 發酒癲失聯</div>
+            <div id="statAbsent" class="text-lg font-bold font-mono text-japandi-text mt-0.5">0</div>
           </div>
         </div>
       </div>
@@ -207,61 +220,80 @@
 
   </main>
 
-  <!-- ROLL CALL MODAL -->
-  <div id="rollCallModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-2xl border border-muji-border max-w-md w-full p-6 shadow-xl space-y-4 transform transition-all">
-      <div class="flex justify-between items-center border-b border-muji-border pb-3">
+  <!-- ROLL CALL & MEMORY MODAL -->
+  <div id="rollCallModal" class="fixed inset-0 bg-black/30 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-[#FAF8F5] rounded-3xl border border-japandi-border max-w-md w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-japandi-border pb-3">
         <div>
-          <h3 id="modalTitle" class="font-bold text-base text-muji-text">日曆點名</h3>
-          <p id="modalSubTitle" class="text-xs text-muji-muted mt-0.5"></p>
+          <h3 id="modalTitle" class="font-bold text-base text-japandi-text">日曆點名與回憶錄</h3>
+          <p id="modalSubTitle" class="text-xs text-japandi-muted mt-0.5"></p>
         </div>
-        <button onclick="closeModal()" class="text-muji-muted hover:text-muji-text text-xl font-bold">✕</button>
+        <button onclick="closeModal()" class="text-japandi-muted hover:text-japandi-text text-xl font-bold">✕</button>
       </div>
 
-      <!-- Roll Call Member Selector (if ALL is selected) -->
+      <!-- Member Selector -->
       <div id="modalMemberSelectGroup" class="space-y-1">
-        <label class="text-xs font-semibold text-muji-muted">選擇點名對象：</label>
-        <select id="modalMemberSelect" class="w-full bg-muji-bg border border-muji-border px-3 py-2 rounded-lg text-sm text-muji-text focus:outline-none">
+        <label class="text-xs font-semibold text-japandi-muted">選擇點名對象：</label>
+        <select id="modalMemberSelect" class="w-full bg-japandi-bg border border-japandi-border px-3 py-2.5 rounded-xl text-xs font-semibold text-japandi-text focus:outline-none">
           <!-- Dynamically populated -->
         </select>
       </div>
 
       <!-- Status Options -->
       <div class="space-y-2">
-        <label class="text-xs font-semibold text-muji-muted">選擇微醺變美狀態：</label>
+        <label class="text-xs font-semibold text-japandi-muted">選擇醉酒狀態：</label>
         <div class="grid grid-cols-2 gap-2">
-          <button type="button" onclick="selectStatus('sober')" id="statusBtn_sober" class="p-2.5 border border-muji-border rounded-xl text-xs font-semibold flex items-center space-x-2 transition">
-            <span class="w-3 h-3 rounded-full bg-emerald-600 inline-block"></span>
+          <button type="button" onclick="selectStatus('sober')" id="statusBtn_sober" class="p-3 border border-japandi-border rounded-2xl text-xs font-bold flex items-center space-x-2 transition">
+            <span class="w-2.5 h-2.5 rounded-full bg-japandi-sober inline-block"></span>
             <span>✨ 清醒變美</span>
           </button>
-          <button type="button" onclick="selectStatus('leave')" id="statusBtn_leave" class="p-2.5 border border-muji-border rounded-xl text-xs font-semibold flex items-center space-x-2 transition">
-            <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+          <button type="button" onclick="selectStatus('leave')" id="statusBtn_leave" class="p-3 border border-japandi-border rounded-2xl text-xs font-bold flex items-center space-x-2 transition">
+            <span class="w-2.5 h-2.5 rounded-full bg-japandi-leave inline-block"></span>
             <span>🍹 喝茫請假</span>
           </button>
-          <button type="button" onclick="selectStatus('late')" id="statusBtn_late" class="p-2.5 border border-muji-border rounded-xl text-xs font-semibold flex items-center space-x-2 transition">
-            <span class="w-3 h-3 rounded-full bg-orange-500 inline-block"></span>
+          <button type="button" onclick="selectStatus('late')" id="statusBtn_late" class="p-3 border border-japandi-border rounded-2xl text-xs font-bold flex items-center space-x-2 transition">
+            <span class="w-2.5 h-2.5 rounded-full bg-japandi-late inline-block"></span>
             <span>🥴 微醺遲到</span>
           </button>
-          <button type="button" onclick="selectStatus('absent')" id="statusBtn_absent" class="p-2.5 border border-muji-border rounded-xl text-xs font-semibold flex items-center space-x-2 transition">
-            <span class="w-3 h-3 rounded-full bg-red-600 inline-block"></span>
+          <button type="button" onclick="selectStatus('absent')" id="statusBtn_absent" class="p-3 border border-japandi-border rounded-2xl text-xs font-bold flex items-center space-x-2 transition">
+            <span class="w-2.5 h-2.5 rounded-full bg-japandi-absent inline-block"></span>
             <span>🤪 發酒癲失聯</span>
           </button>
         </div>
       </div>
 
+      <!-- Photo Upload Box -->
+      <div class="space-y-1.5">
+        <label class="text-xs font-semibold text-japandi-muted">📷 上傳當日發酒癲 / 變美照回憶：</label>
+        <div class="flex items-center space-x-3 bg-japandi-bg p-3 rounded-2xl border border-japandi-border">
+          <div id="photoPreviewContainer" class="w-14 h-14 rounded-xl bg-japandi-card border border-japandi-border overflow-hidden flex items-center justify-center shrink-0">
+            <span class="text-japandi-muted text-xs">無照片</span>
+          </div>
+          <div class="flex-1 space-y-1">
+            <input type="file" id="photoInput" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+            <button type="button" onclick="document.getElementById('photoInput').click()" class="px-3 py-1.5 bg-white border border-japandi-border rounded-xl text-xs font-semibold text-japandi-accent hover:bg-japandi-cardHover transition">
+              選擇相片...
+            </button>
+            <button type="button" id="removePhotoBtn" onclick="removePhoto()" class="px-2 py-1 text-[11px] text-japandi-absent hover:underline hidden">
+              移除照片
+            </button>
+          </div>
+        </div>
+      </div>
+
       <!-- Note Input -->
       <div class="space-y-1">
-        <label class="text-xs font-semibold text-muji-muted">醉酒事由 / 戰績備註：</label>
-        <input type="text" id="modalNote" placeholder="例：喝了2瓶紅酒、敷面膜中、發酒癲斷片" 
-               class="w-full bg-muji-bg border border-muji-border px-3 py-2 rounded-lg text-sm text-muji-text focus:outline-none focus:border-muji-accent">
+        <label class="text-xs font-semibold text-japandi-muted">戰績與事由備註：</label>
+        <input type="text" id="modalNote" placeholder="例：紅酒 2 瓶、敷面膜中、發酒癲斷片" 
+               class="w-full bg-japandi-bg border border-japandi-border px-3 py-2.5 rounded-xl text-xs text-japandi-text focus:outline-none">
       </div>
 
       <!-- Action Buttons -->
       <div class="flex justify-between items-center pt-2">
-        <button onclick="clearRecord()" class="text-xs text-red-500 hover:underline">清除本日紀錄</button>
+        <button onclick="clearRecord()" class="text-xs text-japandi-absent hover:underline">刪除本日紀錄</button>
         <div class="flex space-x-2">
-          <button onclick="closeModal()" class="px-4 py-2 border border-muji-border rounded-lg text-xs font-medium text-muji-muted hover:bg-muji-bg">取消</button>
-          <button onclick="saveRollCall()" class="px-5 py-2 bg-muji-accent text-white rounded-lg text-xs font-medium hover:opacity-90">保存並同步</button>
+          <button onclick="closeModal()" class="px-4 py-2 border border-japandi-border rounded-xl text-xs font-medium text-japandi-muted hover:bg-japandi-bg">取消</button>
+          <button onclick="saveRollCall()" class="px-5 py-2 bg-japandi-accent text-white rounded-xl text-xs font-semibold hover:opacity-90">儲存並同步</button>
         </div>
       </div>
     </div>
@@ -270,14 +302,15 @@
   <script>
     // --- Application State ---
     let appState = {
-      members: ['閨蜜A', '閨蜜B'],
-      records: {}, // Key: "YYYY-MM-DD", Value: { "memberName": { status: 'sober', note: '...' } }
+      members: ['美麗擔當 莉莉', '酒王 威廉', '酒瘋戰術大師 Eva'],
+      records: {}, 
       currentYear: new Date().getFullYear(),
       currentMonth: new Date().getMonth()
     };
 
     let selectedDateStr = '';
     let currentSelectedStatus = 'sober';
+    let currentPhotoBase64 = null;
     let peer = null;
     let connections = [];
     let myRoomId = '';
@@ -288,12 +321,11 @@
       setupPeerSync();
       renderMembers();
       renderCalendar();
-      checkUrlRoom();
     });
 
-    // --- Local Storage Management ---
+    // --- Local Storage ---
     function loadLocalStorage() {
-      const saved = localStorage.getItem('drunk_friends_app_data');
+      const saved = localStorage.getItem('japandi_drunk_memoirs_data');
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
@@ -306,7 +338,7 @@
     }
 
     function saveData(broadcast = true) {
-      localStorage.setItem('drunk_friends_app_data', JSON.stringify({
+      localStorage.setItem('japandi_drunk_memoirs_data', JSON.stringify({
         members: appState.members,
         records: appState.records
       }));
@@ -316,7 +348,7 @@
       }
     }
 
-    // --- Tab Switching ---
+    // --- Tab Switcher ---
     function switchTab(tabNum) {
       const page1 = document.getElementById('page1');
       const page2 = document.getElementById('page2');
@@ -326,13 +358,13 @@
       if (tabNum === 1) {
         page1.classList.remove('hidden');
         page2.classList.add('hidden');
-        tab1Btn.className = "py-3 border-b-2 border-muji-accent text-muji-accent font-semibold transition";
-        tab2Btn.className = "py-3 border-b-2 border-transparent text-muji-muted hover:text-muji-text transition";
+        tab1Btn.className = "flex-1 py-2 rounded-lg bg-white text-japandi-text font-bold shadow-xs transition flex items-center justify-center space-x-1.5";
+        tab2Btn.className = "flex-1 py-2 rounded-lg text-japandi-muted hover:text-japandi-text transition flex items-center justify-center space-x-1.5";
       } else {
         page1.classList.add('hidden');
         page2.classList.remove('hidden');
-        tab2Btn.className = "py-3 border-b-2 border-muji-accent text-muji-accent font-semibold transition";
-        tab1Btn.className = "py-3 border-b-2 border-transparent text-muji-muted hover:text-muji-text transition";
+        tab2Btn.className = "flex-1 py-2 rounded-lg bg-white text-japandi-text font-bold shadow-xs transition flex items-center justify-center space-x-1.5";
+        tab1Btn.className = "flex-1 py-2 rounded-lg text-japandi-muted hover:text-japandi-text transition flex items-center justify-center space-x-1.5";
         renderCalendar();
       }
     }
@@ -341,26 +373,31 @@
     function renderMembers() {
       const memberList = document.getElementById('memberList');
       const memberFilter = document.getElementById('memberFilter');
-      const memberCount = document.getElementById('memberCount');
+      const badge = document.getElementById('memberCountBadge');
 
-      memberCount.innerText = appState.members.length;
+      badge.innerText = `${appState.members.length} 位朋友`;
       memberList.innerHTML = '';
 
       if (appState.members.length === 0) {
-        memberList.innerHTML = `<span class="text-xs text-muji-muted">尚未新增任何酒精閨蜜，請在上方輸入框新增！</span>`;
+        memberList.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-japandi-muted">尚未新增任何酒精閨蜜，請在上方新增！</div>`;
       } else {
-        appState.members.forEach((m) => {
-          const tag = document.createElement('div');
-          tag.className = "flex items-center space-x-1.5 px-3 py-1.5 bg-muji-bg border border-muji-border rounded-lg text-xs font-medium text-muji-text hover:border-red-300 transition cursor-pointer group";
-          tag.innerHTML = `
-            <span>🥂 ${escapeHtml(m)}</span>
-            <span onclick="deleteMember('${escapeHtml(m)}')" class="text-muji-muted group-hover:text-red-500 font-bold ml-1">×</span>
+        appState.members.forEach((m, idx) => {
+          const card = document.createElement('div');
+          card.className = "flex items-center justify-between p-3.5 bg-japandi-bg border border-japandi-border rounded-xl text-xs transition hover:border-japandi-accent";
+          card.innerHTML = `
+            <div class="flex items-center space-x-3">
+              <span class="font-mono text-japandi-muted opacity-60 font-bold">${String(idx + 1).padStart(2, '0')}</span>
+              <span class="font-bold text-japandi-text">${escapeHtml(m)}</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="filterAndGoToCalendar('${escapeHtml(m)}')" class="p-1 text-japandi-muted hover:text-japandi-text" title="查看日曆">📅</button>
+              <button onclick="deleteMember('${escapeHtml(m)}')" class="p-1 text-japandi-muted hover:text-japandi-absent" title="刪除">🗑️</button>
+            </div>
           `;
-          memberList.appendChild(tag);
+          memberList.appendChild(card);
         });
       }
 
-      // Update Calendar Member Filter Dropdown
       const currentVal = memberFilter.value;
       memberFilter.innerHTML = `<option value="ALL">全體成員總覽</option>`;
       appState.members.forEach(m => {
@@ -391,7 +428,7 @@
     }
 
     function deleteMember(name) {
-      if (confirm(`確定要移除酒精閨蜜「${name}」嗎？`)) {
+      if (confirm(`確定要移除「${name}」嗎？`)) {
         appState.members = appState.members.filter(m => m !== name);
         saveData();
         renderMembers();
@@ -399,7 +436,12 @@
       }
     }
 
-    // --- Calendar Rendering & Navigation ---
+    function filterAndGoToCalendar(memberName) {
+      document.getElementById('memberFilter').value = memberName;
+      switchTab(2);
+    }
+
+    // --- Calendar Management ---
     function changeMonth(delta) {
       appState.currentMonth += delta;
       if (appState.currentMonth < 0) {
@@ -423,17 +465,14 @@
       const firstDay = new Date(appState.currentYear, appState.currentMonth, 1).getDay();
       const daysInMonth = new Date(appState.currentYear, appState.currentMonth + 1, 0).getDate();
 
-      // Reset Monthly Stats
       let statSober = 0, statLeave = 0, statLate = 0, statAbsent = 0;
 
-      // Blank Padding Cells
       for (let i = 0; i < firstDay; i++) {
         const emptyCell = document.createElement('div');
-        emptyCell.className = "h-20 bg-muji-bg/30 rounded-xl border border-transparent";
+        emptyCell.className = "h-20 bg-japandi-bg/40 rounded-xl border border-transparent";
         grid.appendChild(emptyCell);
       }
 
-      // Date Cells
       const todayStr = new Date().toISOString().split('T')[0];
 
       for (let day = 1; day <= daysInMonth; day++) {
@@ -442,47 +481,37 @@
 
         const cell = document.createElement('div');
         cell.className = `relative h-20 p-1.5 rounded-xl border transition flex flex-col justify-between cursor-pointer select-none overflow-hidden ${
-          isToday ? 'bg-amber-50/50 border-amber-300' : 'bg-white border-muji-border hover:border-muji-accent'
+          isToday ? 'bg-amber-50/60 border-amber-300' : 'bg-japandi-bg border-japandi-border hover:border-japandi-accent'
         }`;
 
-        // Top Row: Date Number
         const topRow = document.createElement('div');
-        topRow.className = "flex justify-between items-center";
+        topRow.className = "flex justify-between items-center z-10";
         topRow.innerHTML = `
-          <span class="text-xs font-bold font-mono ${isToday ? 'text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded-md' : 'text-muji-text'}">${day}</span>
+          <span class="text-[11px] font-bold font-mono ${isToday ? 'text-amber-800 bg-amber-100 px-1 rounded' : 'text-japandi-text'}">${day}</span>
         `;
         cell.appendChild(topRow);
 
-        // Content Area for Attendance Badges
         const contentArea = document.createElement('div');
-        contentArea.className = "flex-1 my-1 overflow-y-auto space-y-1 text-[10px]";
+        contentArea.className = "flex-1 my-0.5 overflow-y-auto space-y-0.5 text-[9px] z-10";
 
         const dayRecord = appState.records[dateStr] || {};
+        let dayPhoto = null;
 
         if (filter === 'ALL') {
-          // Show indicators for all members
-          const keys = Object.keys(dayRecord);
-          if (keys.length > 0) {
-            keys.forEach(m => {
-              const rec = dayRecord[m];
-              const badge = createBadgeElement(m, rec.status, rec.note);
-              contentArea.appendChild(badge);
-
-              // Update Stats
-              if (rec.status === 'sober') statSober++;
-              if (rec.status === 'leave') statLeave++;
-              if (rec.status === 'late') statLate++;
-              if (rec.status === 'absent') statAbsent++;
-            });
-          }
+          Object.keys(dayRecord).forEach(m => {
+            const rec = dayRecord[m];
+            if (rec.photo) dayPhoto = rec.photo;
+            contentArea.appendChild(createBadge(m, rec.status, rec.note));
+            if (rec.status === 'sober') statSober++;
+            if (rec.status === 'leave') statLeave++;
+            if (rec.status === 'late') statLate++;
+            if (rec.status === 'absent') statAbsent++;
+          });
         } else {
-          // Show specific member status
           const rec = dayRecord[filter];
           if (rec) {
-            const badge = createBadgeElement(filter, rec.status, rec.note);
-            contentArea.appendChild(badge);
-
-            // Update Stats
+            if (rec.photo) dayPhoto = rec.photo;
+            contentArea.appendChild(createBadge(filter, rec.status, rec.note));
             if (rec.status === 'sober') statSober++;
             if (rec.status === 'leave') statLeave++;
             if (rec.status === 'late') statLate++;
@@ -490,82 +519,74 @@
           }
         }
 
+        // Render Photo Thumbnail background if available
+        if (dayPhoto) {
+          const imgBg = document.createElement('div');
+          imgBg.className = "absolute inset-0 opacity-25 bg-cover bg-center pointer-events-none";
+          imgBg.style.backgroundImage = `url(${dayPhoto})`;
+          cell.appendChild(imgBg);
+        }
+
         cell.appendChild(contentArea);
 
-        // Progress Overlay for Long Press Feedback
         const progress = document.createElement('div');
-        progress.className = "absolute bottom-0 left-0 h-1 bg-muji-accent w-0 progress-bar";
+        progress.className = "absolute bottom-0 left-0 h-0.5 bg-japandi-accent w-0 progress-bar z-20";
         cell.appendChild(progress);
 
-        // Bind Long Press & Click Events
         bindLongPress(cell, dateStr, progress);
-
         grid.appendChild(cell);
       }
 
-      // Update Monthly Statistics
       document.getElementById('statSober').innerText = statSober;
       document.getElementById('statLeave').innerText = statLeave;
       document.getElementById('statLate').innerText = statLate;
       document.getElementById('statAbsent').innerText = statAbsent;
     }
 
-    function createBadgeElement(name, status, note) {
+    function createBadge(name, status, note) {
       const div = document.createElement('div');
-      let bgColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+      let style = 'bg-emerald-100 text-emerald-800 border-emerald-200';
       let icon = '✨';
 
-      if (status === 'leave') {
-        bgColor = 'bg-amber-100 text-amber-800 border-amber-200';
-        icon = '🍹';
-      } else if (status === 'late') {
-        bgColor = 'bg-orange-100 text-orange-800 border-orange-200';
-        icon = '🥴';
-      } else if (status === 'absent') {
-        bgColor = 'bg-red-100 text-red-800 border-red-200';
-        icon = '🤪';
-      }
+      if (status === 'leave') { style = 'bg-amber-100 text-amber-800 border-amber-200'; icon = '🍹'; }
+      if (status === 'late') { style = 'bg-orange-100 text-orange-800 border-orange-200'; icon = '🥴'; }
+      if (status === 'absent') { style = 'bg-red-100 text-red-800 border-red-200'; icon = '🤪'; }
 
-      div.className = `px-1.5 py-0.5 rounded border ${bgColor} flex items-center justify-between truncate`;
+      div.className = `px-1 py-0.5 rounded border ${style} flex items-center justify-between truncate`;
       div.title = note ? `${name}: ${note}` : name;
-      div.innerHTML = `
-        <span class="truncate">${icon} ${escapeHtml(name)}</span>
-        ${note ? `<span class="ml-0.5 text-[9px] opacity-75">💬</span>` : ''}
-      `;
+      div.innerHTML = `<span class="truncate">${icon} ${escapeHtml(name)}</span>`;
       return div;
     }
 
-    // --- Long Press Detection Logic ---
+    // --- Long Press Handler ---
     function bindLongPress(element, dateStr, progressEl) {
       let timer = null;
-      const pressDuration = 500; // 0.5 seconds
+      const duration = 500;
 
-      const startPress = (e) => {
+      const start = () => {
         element.classList.add('long-press-active');
         progressEl.style.width = '100%';
-
         timer = setTimeout(() => {
           openRollCallModal(dateStr);
-          resetPress();
-        }, pressDuration);
+          reset();
+        }, duration);
       };
 
-      const resetPress = () => {
+      const reset = () => {
         clearTimeout(timer);
         element.classList.remove('long-press-active');
         progressEl.style.width = '0%';
       };
 
-      element.addEventListener('touchstart', startPress, { passive: true });
-      element.addEventListener('touchend', resetPress);
-      element.addEventListener('touchcancel', resetPress);
-
-      element.addEventListener('mousedown', startPress);
-      element.addEventListener('mouseup', resetPress);
-      element.addEventListener('mouseleave', resetPress);
+      element.addEventListener('touchstart', start, { passive: true });
+      element.addEventListener('touchend', reset);
+      element.addEventListener('touchcancel', reset);
+      element.addEventListener('mousedown', start);
+      element.addEventListener('mouseup', reset);
+      element.addEventListener('mouseleave', reset);
     }
 
-    // --- Modal Logic ---
+    // --- Modal Handler ---
     function openRollCallModal(dateStr) {
       selectedDateStr = dateStr;
       const modal = document.getElementById('rollCallModal');
@@ -575,14 +596,13 @@
       const memberSelectGroup = document.getElementById('modalMemberSelectGroup');
       const memberSelect = document.getElementById('modalMemberSelect');
 
-      title.innerText = `📅 日曆點名: ${dateStr}`;
+      title.innerText = `📅 點名與回憶: ${dateStr}`;
 
       if (appState.members.length === 0) {
-        alert('請先在第一頁新增酒精閨蜜成員！');
+        alert('請先新增酒精閨蜜成員！');
         return;
       }
 
-      // Populate Modal Member Select Dropdown
       memberSelect.innerHTML = '';
       appState.members.forEach(m => {
         const opt = document.createElement('option');
@@ -594,17 +614,14 @@
       if (filter !== 'ALL') {
         memberSelect.value = filter;
         memberSelectGroup.classList.add('hidden');
-        subtitle.innerText = `正在記錄朋友：${filter}`;
+        subtitle.innerText = `對象：${filter}`;
       } else {
         memberSelectGroup.classList.remove('hidden');
-        subtitle.innerText = `請選擇成員進行醉酒變美記錄`;
+        subtitle.innerText = `請選擇點名對象`;
       }
 
-      // Load existing record for selected date/member
       loadModalFormData();
-
       memberSelect.onchange = () => loadModalFormData();
-
       modal.classList.remove('hidden');
     }
 
@@ -616,9 +633,15 @@
       if (memberRec) {
         selectStatus(memberRec.status);
         document.getElementById('modalNote').value = memberRec.note || '';
+        if (memberRec.photo) {
+          updatePhotoPreview(memberRec.photo);
+        } else {
+          updatePhotoPreview(null);
+        }
       } else {
         selectStatus('sober');
         document.getElementById('modalNote').value = '';
+        updatePhotoPreview(null);
       }
     }
 
@@ -627,11 +650,60 @@
       ['sober', 'leave', 'late', 'absent'].forEach(s => {
         const btn = document.getElementById(`statusBtn_${s}`);
         if (s === status) {
-          btn.className = "p-2.5 border-2 border-muji-accent bg-muji-accentLight rounded-xl text-xs font-bold flex items-center space-x-2 transition";
+          btn.className = "p-3 border-2 border-japandi-accent bg-white rounded-2xl text-xs font-bold flex items-center space-x-2 transition shadow-xs";
         } else {
-          btn.className = "p-2.5 border border-muji-border bg-white rounded-xl text-xs font-semibold flex items-center space-x-2 transition opacity-60";
+          btn.className = "p-3 border border-japandi-border bg-japandi-bg rounded-2xl text-xs font-semibold flex items-center space-x-2 transition opacity-50";
         }
       });
+    }
+
+    // --- Photo Upload Handling ---
+    function handlePhotoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // Compress photo to save storage/bandwidth
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxDim = 400; // max size
+          let w = img.width, h = img.height;
+          if (w > h) {
+            if (w > maxDim) { h *= maxDim / w; w = maxDim; }
+          } else {
+            if (h > maxDim) { w *= maxDim / h; h = maxDim; }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          const compressed = canvas.toDataURL('image/jpeg', 0.7);
+          updatePhotoPreview(compressed);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updatePhotoPreview(base64) {
+      currentPhotoBase64 = base64;
+      const container = document.getElementById('photoPreviewContainer');
+      const removeBtn = document.getElementById('removePhotoBtn');
+
+      if (base64) {
+        container.innerHTML = `<img src="${base64}" class="w-full h-full object-cover">`;
+        removeBtn.classList.remove('hidden');
+      } else {
+        container.innerHTML = `<span class="text-japandi-muted text-xs">無照片</span>`;
+        removeBtn.classList.add('hidden');
+      }
+    }
+
+    function removePhoto() {
+      updatePhotoPreview(null);
+      document.getElementById('photoInput').value = '';
     }
 
     function closeModal() {
@@ -642,13 +714,12 @@
       const memberName = document.getElementById('modalMemberSelect').value;
       const note = document.getElementById('modalNote').value.trim();
 
-      if (!appState.records[selectedDateStr]) {
-        appState.records[selectedDateStr] = {};
-      }
+      if (!appState.records[selectedDateStr]) appState.records[selectedDateStr] = {};
 
       appState.records[selectedDateStr][memberName] = {
         status: currentSelectedStatus,
-        note: note
+        note: note,
+        photo: currentPhotoBase64
       };
 
       saveData();
@@ -669,12 +740,12 @@
       closeModal();
     }
 
-    // --- JSON Export / Import ---
+    // --- JSON Backup / Restore ---
     function exportData() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
       const anchor = document.createElement('a');
       anchor.setAttribute("href", dataStr);
-      anchor.setAttribute("download", `drunk_friends_backup_${new Date().toISOString().split('T')[0]}.json`);
+      anchor.setAttribute("download", `drunk_memoirs_backup_${new Date().toISOString().split('T')[0]}.json`);
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
@@ -694,18 +765,16 @@
             saveData();
             renderMembers();
             renderCalendar();
-            alert('匯入成功！數據已同步至本地。');
-          } else {
-            alert('檔案格式不正確！');
+            alert('回憶戰績成功還原！');
           }
         } catch(err) {
-          alert('解析 JSON 檔案失敗！');
+          alert('JSON 解析失敗！');
         }
       };
       reader.readAsText(file);
     }
 
-    // --- Realtime P2P Sync (PeerJS) ---
+    // --- PeerJS Cloud Realtime Sync ---
     function setupPeerSync() {
       const urlParams = new URLSearchParams(window.location.search);
       const targetRoom = urlParams.get('room');
@@ -715,8 +784,7 @@
         document.getElementById('roomIdDisplay').innerText = myRoomId;
         connectToHost(targetRoom);
       } else {
-        // Generate random room code
-        myRoomId = 'BEAUTY-' + Math.floor(1000 + Math.random() * 9000);
+        myRoomId = 'MEMOIR-' + Math.floor(1000 + Math.random() * 9000);
         document.getElementById('roomIdDisplay').innerText = myRoomId;
         initHostPeer();
       }
@@ -724,22 +792,16 @@
 
     function initHostPeer() {
       peer = new Peer(myRoomId);
-
-      peer.on('open', (id) => {
-        document.getElementById('syncStatusDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block";
+      peer.on('open', () => {
+        document.getElementById('syncStatusDot').className = "w-2 h-2 rounded-full bg-emerald-500 inline-block";
       });
-
       peer.on('connection', (conn) => {
         connections.push(conn);
-        conn.on('open', () => {
-          // Send current state to newly connected client
-          conn.send({ type: 'STATE_UPDATE', data: appState });
-        });
-
+        conn.on('open', () => conn.send({ type: 'STATE_UPDATE', data: appState }));
         conn.on('data', (data) => {
           if (data.type === 'STATE_UPDATE') {
             appState = data.data;
-            saveData(false); // Don't broadcast loop
+            saveData(false);
             renderMembers();
             renderCalendar();
           }
@@ -749,19 +811,16 @@
 
     function connectToHost(hostId) {
       peer = new Peer();
-
       peer.on('open', () => {
         const conn = peer.connect(hostId);
         connections.push(conn);
-
         conn.on('open', () => {
-          document.getElementById('syncStatusDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block";
+          document.getElementById('syncStatusDot').className = "w-2 h-2 rounded-full bg-emerald-500 inline-block";
         });
-
         conn.on('data', (data) => {
           if (data.type === 'STATE_UPDATE') {
             appState = data.data;
-            localStorage.setItem('drunk_friends_app_data', JSON.stringify({
+            localStorage.setItem('japandi_drunk_memoirs_data', JSON.stringify({
               members: appState.members,
               records: appState.records
             }));
@@ -774,26 +833,19 @@
 
     function broadcastState() {
       connections.forEach(conn => {
-        if (conn.open) {
-          conn.send({ type: 'STATE_UPDATE', data: appState });
-        }
+        if (conn.open) conn.send({ type: 'STATE_UPDATE', data: appState });
       });
     }
 
     function copyShareLink() {
       const shareUrl = `${window.location.origin}${window.location.pathname}?room=${myRoomId}`;
       navigator.clipboard.writeText(shareUrl).then(() => {
-        alert(`已複製共享連結！\n將此連結發給朋友，大家就能進入同一個房間（${myRoomId}）即時同步點名：\n${shareUrl}`);
+        alert(`已複製共享連結！\n將連結發給朋友，即可進入同一個房間（${myRoomId}）跨裝置即時同步回憶與點名：\n${shareUrl}`);
       }).catch(() => {
         prompt("請複製以下連結發給朋友：", shareUrl);
       });
     }
 
-    function checkUrlRoom() {
-      // Handled in setupPeerSync
-    }
-
-    // --- Helper Functions ---
     function escapeHtml(str) {
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
