@@ -6,6 +6,10 @@
   <title>那群跟我變美(發酒癲）的朋友回憶錄</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Noto Serif TC (思源宋體) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
   <!-- PeerJS CDN for Realtime Cross-Device Sync -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <script>
@@ -30,7 +34,8 @@
             }
           },
           fontFamily: {
-            sans: ['"PingFang TC"', '"Hiragino Sans GB"', '"Microsoft JhengHei"', '-apple-system', 'sans-serif'],
+            // 中文字全部優先使用宋體/明體系列
+            sans: ['"Noto Serif TC"', '"Songti TC"', '"PMingLiU"', '"MingLiU"', 'Georgia', 'serif'],
             mono: ['"JetBrains Mono"', 'monospace']
           }
         }
@@ -41,6 +46,7 @@
     body {
       background-color: #F7F4EF;
       color: #2D2B28;
+      font-family: "Noto Serif TC", "Songti TC", "PMingLiU", "MingLiU", serif;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
@@ -75,7 +81,7 @@
         </div>
         <div>
           <h1 class="text-base sm:text-lg font-bold tracking-tight text-japandi-text">那群跟我變美(發酒癲）的朋友回憶錄</h1>
-          <p class="text-[11px] text-japandi-muted font-medium tracking-wider uppercase">Beauty & Drunk Friend Tracker</p>
+          <p class="text-[11px] text-japandi-muted font-medium tracking-wider uppercase font-sans">Beauty & Drunk Friend Tracker</p>
         </div>
       </div>
       
@@ -519,7 +525,6 @@
           }
         }
 
-        // Render Photo Thumbnail background if available
         if (dayPhoto) {
           const imgBg = document.createElement('div');
           imgBg.className = "absolute inset-0 opacity-25 bg-cover bg-center pointer-events-none";
@@ -664,11 +669,10 @@
 
       const reader = new FileReader();
       reader.onload = function(e) {
-        // Compress photo to save storage/bandwidth
         const img = new Image();
         img.onload = function() {
           const canvas = document.createElement('canvas');
-          const maxDim = 400; // max size
+          const maxDim = 400;
           let w = img.width, h = img.height;
           if (w > h) {
             if (w > maxDim) { h *= maxDim / w; w = maxDim; }
