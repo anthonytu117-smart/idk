@@ -1,785 +1,802 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>那群跟我變美(發酒癲）的朋友點名簿</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+JP:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        muji: {
-                            bg: '#F7F5F0',       /* 主背景米白 */
-                            card: '#FFFFFF',     /* 卡片純白 */
-                            subbg: '#EFECE6',    /* 區塊淡灰 */
-                            text: '#333333',     /* 主要深灰字 */
-                            muted: '#8C857B',    /* 輔助灰褐字 */
-                            border: '#E2DDD5',   /* 柔和邊框 */
-                            accent: '#7F222B',   /* 無印經典深紅點綴 */
-                            wood: '#A68A68',     /* 暖木調 */
-                            // 狀態點綴色
-                            present: '#4A7C59',  /* 綠 - 清醒變美 */
-                            leave: '#D97706',    /* 橘/黃 - 喝茫請假 */
-                            late: '#7C3AED',     /* 紫 - 微醺遲到 */
-                            absent: '#C53030'    /* 紅 - 發酒癲失聯 */
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Noto Sans TC', 'sans-serif'],
-                        serif: ['Noto Serif JP', 'serif']
-                    }
-                }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>那群跟我變美(發酒癲）的朋友點名簿</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- PeerJS CDN for Realtime Cross-Device Sync -->
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            muji: {
+              bg: '#F7F5F0',
+              card: '#FFFFFF',
+              border: '#E3DFD5',
+              text: '#333333',
+              muted: '#7F7B75',
+              accent: '#8C7A6B',
+              accentLight: '#F0EAE1',
+              sober: '#6E8B74',      // 清醒變美
+              leave: '#D99B00',      // 喝茫請假
+              late: '#C86D51',       // 微醺遲到
+              absent: '#A94442'      // 發酒癲失聯
             }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Hiragino Sans GB"', '"Microsoft JhengHei"', sans-serif],
+          }
         }
-    </script>
-
-    <style>
-        body {
-            background-color: #F7F5F0;
-            color: #333333;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* 防文字選擇 (長按時不觸發系統複製選單) */
-        .prevent-select {
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
-        /* 長按動畫反饋 */
-        @keyframes longPressProgress {
-            0% { width: 0%; opacity: 0.6; }
-            100% { width: 100%; opacity: 1; }
-        }
-
-        .press-indicator {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 3px;
-            background-color: #7F222B;
-            width: 0%;
-            transition: width 0.05s linear;
-        }
-
-        .is-pressing .press-indicator {
-            animation: longPressProgress 0.5s linear forwards;
-        }
-
-        .is-pressing {
-            transform: scale(0.98);
-            background-color: #EFECE6 !important;
-        }
-
-        /* 滾動條簡約化 */
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #F7F5F0;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #D5CFC5;
-            border-radius: 2px;
-        }
-    </style>
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #F7F5F0;
+      color: #333333;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .long-press-active {
+      transform: scale(0.96);
+      transition: transform 0.1s ease;
+    }
+    .progress-bar {
+      transition: width 0.5s linear;
+    }
+    /* Custom Scrollbar for MUJI aesthetics */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F7F5F0;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D5D0C5;
+      border-radius: 3px;
+    }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans prevent-select">
+<body class="min-h-screen flex flex-col font-sans">
 
-    <header class="bg-muji-card border-b border-muji-border px-4 py-4 sm:px-8">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-muji-accent text-white flex items-center justify-center font-serif text-base font-semibold rounded-sm shadow-xs">
-                    🍷
-                </div>
-                <div>
-                    <h1 class="text-base sm:text-lg font-bold tracking-wider text-muji-text font-serif">
-                        那群跟我變美(發酒癲）的朋友點名簿
-                    </h1>
-                    <p class="text-[11px] font-sans text-muji-muted font-normal">
-                        Beauty & Drunk Friend Tracker
-                    </p>
-                </div>
-            </div>
-
-            <!-- 主分頁標籤 -->
-            <nav class="flex items-center gap-1 bg-muji-subbg p-1 rounded-md text-xs font-medium">
-                <button id="nav-members" onclick="switchMainTab('members')" class="px-4 py-1.5 rounded transition-all bg-muji-card text-muji-text shadow-xs">
-                    <i class="fa-solid fa-users text-[11px] mr-1.5"></i>朋友名冊
-                </button>
-                <button id="nav-calendar" onclick="switchMainTab('calendar')" class="px-4 py-1.5 rounded transition-all text-muji-muted hover:text-muji-text">
-                    <i class="fa-regular fa-calendar-check text-[11px] mr-1.5"></i>酒癲點名日曆
-                </button>
-            </nav>
+  <!-- Top Header -->
+  <header class="bg-white border-b border-muji-border sticky top-0 z-30 shadow-sm">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-2">
+      <div class="flex items-center space-x-2">
+        <span class="text-2xl">🍷</span>
+        <div>
+          <h1 class="text-lg font-bold tracking-wide text-muji-text">那群跟我變美(發酒癲）的朋友點名簿</h1>
+          <p class="text-xs text-muji-muted">MUJI Style • 跨裝置即時雲端點名</p>
         </div>
-    </header>
-
-    <div class="max-w-6xl w-full mx-auto p-4 sm:p-6 flex-1 flex flex-col gap-6">
-
-        <!-- ==================== 頁面一：朋友名單管理 ==================== -->
-        <section id="tab-members" class="space-y-6">
-            <!-- 新增朋友卡片 -->
-            <div class="bg-muji-card border border-muji-border rounded-lg p-5 sm:p-6 shadow-xs">
-                <h2 class="text-sm font-semibold text-muji-text mb-4 flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 bg-muji-accent rounded-full"></span> 邀請酒友 / 閨蜜加入
-                </h2>
-                <form id="add-member-form" onsubmit="handleAddMember(event)" class="flex flex-col sm:flex-row gap-3">
-                    <input type="text" id="member-name-input" placeholder="請輸入朋友暱稱（例如：喝酒奇俠、美妝小天才）" 
-                           class="flex-1 bg-muji-bg border border-muji-border rounded px-4 py-2 text-sm text-muji-text placeholder:text-muji-muted/60 focus:outline-none focus:border-muji-text transition-colors"
-                           maxlength="20" required>
-                    <button type="submit" class="bg-muji-text hover:bg-black text-white px-6 py-2 rounded text-sm font-medium transition-colors shrink-0 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-plus text-xs"></i> 入冊加入
-                    </button>
-                </form>
-            </div>
-
-            <!-- 朋友列表區塊 -->
-            <div class="bg-muji-card border border-muji-border rounded-lg p-5 sm:p-6 shadow-xs">
-                <div class="flex items-center justify-between mb-4 border-b border-muji-subbg pb-3">
-                    <div class="flex items-center gap-2">
-                        <h2 class="text-sm font-semibold text-muji-text">酒瘋閨蜜總覽</h2>
-                        <span id="member-count-tag" class="text-xs bg-muji-subbg text-muji-muted px-2 py-0.5 rounded">0 人</span>
-                    </div>
-                    <div class="flex items-center gap-3 text-xs">
-                        <button onclick="exportData()" class="text-muji-muted hover:text-muji-text flex items-center gap-1">
-                            <i class="fa-solid fa-download"></i> 備份戰績
-                        </button>
-                        <label class="text-muji-muted hover:text-muji-text cursor-pointer flex items-center gap-1">
-                            <i class="fa-solid fa-upload"></i> 還原戰績
-                            <input type="file" accept=".json" onchange="importData(event)" class="hidden">
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 名單 Grid -->
-                <div id="member-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                    <!-- 動態注入成員卡片 -->
-                </div>
-
-                <!-- 空狀態提示 -->
-                <div id="member-empty-notice" class="hidden py-12 text-center text-muji-muted text-xs">
-                    <i class="fa-solid fa-wine-glass-empty text-2xl mb-2 block opacity-40"></i>
-                    目前還沒有朋友名單，快在上方加入你的發酒癲閨蜜吧！
-                </div>
-            </div>
-        </section>
-
-
-        <!-- ==================== 頁面二：酒癲點名日曆 ==================== -->
-        <section id="tab-calendar" class="hidden space-y-4 flex-1 flex flex-col">
-            
-            <!-- 上方控制列 -->
-            <div class="bg-muji-card border border-muji-border rounded-lg p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
-                
-                <!-- 切換檢視對象 -->
-                <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <span class="text-xs text-muji-muted shrink-0">觀察對象：</span>
-                    <select id="person-select" onchange="handlePersonChange(this.value)" class="bg-muji-bg border border-muji-border rounded px-3 py-1.5 text-xs font-medium text-muji-text focus:outline-none focus:border-muji-text transition-colors flex-1 sm:w-52">
-                        <!-- 動態生成選項 -->
-                    </select>
-                </div>
-
-                <!-- 日曆月份切換 -->
-                <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-                    <div class="flex items-center gap-1">
-                        <button onclick="changeMonth(-1)" class="w-7 h-7 rounded border border-muji-border hover:bg-muji-subbg flex items-center justify-center text-xs text-muji-text transition-colors">
-                            <i class="fa-solid fa-chevron-left"></i>
-                        </button>
-                        <button onclick="goToToday()" class="px-2.5 py-1 rounded border border-muji-border hover:bg-muji-subbg text-xs font-medium text-muji-text transition-colors">
-                            今天
-                        </button>
-                        <button onclick="changeMonth(1)" class="w-7 h-7 rounded border border-muji-border hover:bg-muji-subbg flex items-center justify-center text-xs text-muji-text transition-colors">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </button>
-                    </div>
-                    <span id="calendar-title" class="text-sm font-bold text-muji-text font-serif tracking-wider">2026年 09月</span>
-                </div>
-            </div>
-
-            <!-- 月度酒癲變美統計 -->
-            <div id="stats-bar" class="bg-muji-card border border-muji-border rounded-lg p-3 px-4 flex flex-wrap items-center justify-between text-xs text-muji-muted gap-2">
-                <span class="font-medium text-muji-text" id="stats-title">本月戰況統計</span>
-                <div class="flex flex-wrap items-center gap-3 text-[11px]">
-                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-muji-present"></span> ✨ 清醒變美: <strong id="stat-present" class="text-muji-text">0</strong> 天</span>
-                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-muji-leave"></span> 🍹 喝茫請假: <strong id="stat-leave" class="text-muji-text">0</strong> 天</span>
-                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-muji-late"></span> 🥴 微醺遲到: <strong id="stat-late" class="text-muji-text">0</strong> 天</span>
-                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-muji-absent"></span> 🤪 發酒癲失聯: <strong id="stat-absent" class="text-muji-text">0</strong> 天</span>
-                </div>
-            </div>
-
-            <!-- 操作提示 -->
-            <div class="text-[11px] text-muji-muted flex items-center gap-1 px-1">
-                <i class="fa-solid fa-hand-pointer text-muji-accent"></i>
-                <span>操作小秘訣：在任何日期上<b>長按 (0.5秒)</b> 或點擊，即可開啟點名視窗，紀錄當天誰在變美、誰又發酒癲！</span>
-            </div>
-
-            <!-- 日曆網格 -->
-            <div class="bg-muji-card border border-muji-border rounded-lg p-3 sm:p-4 flex-1 flex flex-col shadow-xs">
-                <!-- 星期表頭 -->
-                <div class="grid grid-cols-7 gap-1 text-center font-medium text-xs text-muji-muted border-b border-muji-subbg pb-2 mb-2">
-                    <div class="text-muji-accent">日</div>
-                    <div>一</div>
-                    <div>二</div>
-                    <div>三</div>
-                    <div>四</div>
-                    <div>五</div>
-                    <div>六</div>
-                </div>
-
-                <!-- 日期矩陣 -->
-                <div id="calendar-grid" class="grid grid-cols-7 gap-1.5 flex-1 auto-rows-fr">
-                    <!-- 動態生成日曆格 -->
-                </div>
-            </div>
-        </section>
-
-    </div>
-
-
-    <!-- Modal 彈出點名視窗 -->
-    <div id="attendance-modal" class="fixed inset-0 z-50 bg-black/30 backdrop-blur-xs flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
-        <div class="bg-muji-card border border-muji-border rounded-lg shadow-xl max-w-md w-full overflow-hidden transform scale-95 transition-transform duration-200 flex flex-col max-h-[85vh]" id="modal-content">
-            
-            <!-- Modal Header -->
-            <div class="bg-muji-subbg px-5 py-3.5 border-b border-muji-border flex justify-between items-center">
-                <div>
-                    <h3 id="modal-date-title" class="text-sm font-bold text-muji-text font-serif">2026-09-19 點名登記</h3>
-                    <p id="modal-subtitle" class="text-xs text-muji-muted mt-0.5">登記大家今天的變美與酒癲戰況 🥂</p>
-                </div>
-                <button onclick="closeModal()" class="text-muji-muted hover:text-muji-text text-sm w-7 h-7 flex items-center justify-center">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <!-- Modal Content (表單內容) -->
-            <div class="p-5 overflow-y-auto space-y-4 flex-1" id="modal-body-container">
-                <!-- 動態注入點名表單項目 -->
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="px-5 py-3.5 bg-muji-subbg border-t border-muji-border flex justify-end gap-2">
-                <button onclick="closeModal()" class="px-4 py-1.5 rounded text-xs text-muji-muted hover:text-muji-text font-medium transition-colors">取消</button>
-                <button onclick="saveAttendanceRecord()" class="px-5 py-1.5 rounded bg-muji-text hover:bg-black text-white text-xs font-medium transition-colors">儲存紀錄</button>
-            </div>
+      </div>
+      
+      <!-- Sync Room Box -->
+      <div class="flex items-center space-x-2 bg-muji-bg px-3 py-1.5 rounded-lg border border-muji-border text-xs">
+        <div class="flex items-center space-x-1">
+          <span id="syncStatusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block animate-pulse"></span>
+          <span class="text-muji-muted font-medium">房間:</span>
+          <span id="roomIdDisplay" class="font-mono font-bold text-muji-text">建立中...</span>
         </div>
+        <button onclick="copyShareLink()" class="ml-2 bg-white px-2 py-1 rounded border border-muji-border hover:bg-muji-accentLight text-muji-accent font-medium transition">
+          複製共享連結
+        </button>
+      </div>
     </div>
+  </header>
 
+  <!-- Navigation Tabs -->
+  <div class="bg-white border-b border-muji-border">
+    <div class="max-w-4xl mx-auto px-4 flex space-x-8 text-sm font-medium">
+      <button id="tab1Btn" onclick="switchTab(1)" class="py-3 border-b-2 border-muji-accent text-muji-accent font-semibold transition">
+        👥 1. 酒精閨蜜名單
+      </button>
+      <button id="tab2Btn" onclick="switchTab(2)" class="py-3 border-b-2 border-transparent text-muji-muted hover:text-muji-text transition">
+        📅 2. 變美與醉酒日曆
+      </button>
+    </div>
+  </div>
 
-    <script>
-        // 趣味點名狀態類型庫
-        const STATUS_TYPES = {
-            'present': { label: '✨ 清醒變美', icon: '✨', bg: 'bg-muji-present', text: 'text-muji-present', badge: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
-            'leave':   { label: '🍹 喝茫請假', icon: '🍹', bg: 'bg-muji-leave',   text: 'text-muji-leave',   badge: 'bg-amber-50 text-amber-800 border-amber-200' },
-            'late':    { label: '🥴 微醺遲到', icon: '🥴', bg: 'bg-muji-late',    text: 'text-muji-late',    badge: 'bg-purple-50 text-purple-800 border-purple-200' },
-            'absent':  { label: '🤪 發酒癲失聯', icon: '🤪', bg: 'bg-muji-absent',  text: 'text-muji-absent',  badge: 'bg-rose-50 text-rose-800 border-rose-200' }
-        };
+  <!-- Main Content Container -->
+  <main class="max-w-4xl mx-auto px-4 py-6 flex-1 w-full">
 
-        // 全局應用狀態
-        let currentTab = 'members';
-        let members = [];
-        let selectedPersonId = 'ALL';
-        
-        // 點名資料結構: { 'YYYY-MM-DD': { memberId: { status: 'present'|'leave'|'late'|'absent', note: '戰績或備註' } } }
-        let attendanceData = {}; 
+    <!-- PAGE 1: Friends Management -->
+    <section id="page1" class="space-y-6">
+      <div class="bg-white p-5 rounded-xl border border-muji-border shadow-sm">
+        <h2 class="text-base font-semibold mb-3 text-muji-text flex items-center">
+          <span class="mr-2">➕</span> 新增閨蜜成員
+        </h2>
+        <div class="flex gap-2">
+          <input type="text" id="newMemberName" placeholder="輸入朋友暱稱（如：喝酒怪、酒後失憶王）" 
+                 class="flex-1 px-4 py-2.5 bg-muji-bg border border-muji-border rounded-lg text-sm focus:outline-none focus:border-muji-accent transition">
+          <button onclick="addMember()" class="bg-muji-accent text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 active:scale-95 transition">
+            新增成員
+          </button>
+        </div>
+      </div>
 
-        // 當前日曆指標
-        let calendarYear = new Date().getFullYear();
-        let calendarMonth = new Date().getMonth();
+      <div class="bg-white p-5 rounded-xl border border-muji-border shadow-sm">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-base font-semibold text-muji-text">👥 名單管理 (<span id="memberCount">0</span>人)</h2>
+          <span class="text-xs text-muji-muted">點擊可直接刪除成員</span>
+        </div>
+        <div id="memberList" class="flex flex-wrap gap-2.5">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </section>
 
-        // 長按控制變數
-        let pressTimer = null;
-        let pressTarget = null;
-        let isLongPressed = false;
-        let activeModalDate = null;
-        let tempModalState = {};
+    <!-- PAGE 2: Calendar & Roll Call -->
+    <section id="page2" class="space-y-6 hidden">
+      <!-- Controls Header -->
+      <div class="bg-white p-4 rounded-xl border border-muji-border shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
+        <!-- Target Selection -->
+        <div class="flex items-center space-x-2 w-full md:w-auto">
+          <label class="text-xs font-semibold text-muji-muted whitespace-nowrap">查看對象：</label>
+          <select id="memberFilter" onchange="renderCalendar()" class="bg-muji-bg border border-muji-border px-3 py-1.5 rounded-lg text-sm text-muji-text focus:outline-none focus:border-muji-accent w-full">
+            <option value="ALL">全體成員總覽</option>
+          </select>
+        </div>
 
-        // 頁面初始化
-        window.onload = function() {
-            loadFromStorage();
+        <!-- Month Navigation -->
+        <div class="flex items-center space-x-3">
+          <button onclick="changeMonth(-1)" class="p-1.5 rounded-lg border border-muji-border hover:bg-muji-bg transition">👈</button>
+          <span id="currentMonthLabel" class="text-base font-bold text-muji-text font-mono">2026 年 09 月</span>
+          <button onclick="changeMonth(1)" class="p-1.5 rounded-lg border border-muji-border hover:bg-muji-bg transition">👉</button>
+        </div>
+
+        <!-- Export / Import -->
+        <div class="flex space-x-2">
+          <button onclick="exportData()" class="px-2.5 py-1.5 border border-muji-border rounded-lg text-xs font-medium text-muji-muted hover:bg-muji-bg transition">匯出 JSON</button>
+          <button onclick="document.getElementById('importFile').click()" class="px-2.5 py-1.5 border border-muji-border rounded-lg text-xs font-medium text-muji-muted hover:bg-muji-bg transition">匯入 JSON</button>
+          <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(event)">
+        </div>
+      </div>
+
+      <!-- Long Press Guide -->
+      <div class="bg-muji-accentLight p-3 rounded-lg border border-muji-border text-xs text-muji-accent flex items-center justify-between">
+        <span>💡 <b>點名操作說明：</b>在下方日曆格子上記住<b>長按 0.5 秒</b>即可觸發醉酒變美點名！</span>
+      </div>
+
+      <!-- Calendar Grid -->
+      <div class="bg-white p-4 rounded-xl border border-muji-border shadow-sm">
+        <!-- Weekday Headers -->
+        <div class="grid grid-cols-7 gap-1 text-center font-semibold text-xs text-muji-muted py-2 border-b border-muji-border mb-2">
+          <div class="text-red-400">日</div>
+          <div>一</div>
+          <div>二</div>
+          <div>三</div>
+          <div>四</div>
+          <div>五</div>
+          <div class="text-amber-600">六</div>
+        </div>
+
+        <!-- Days Cells -->
+        <div id="calendarGrid" class="grid grid-cols-7 gap-1.5 sm:gap-2">
+          <!-- Dynamically Generated -->
+        </div>
+      </div>
+
+      <!-- Monthly Stats -->
+      <div class="bg-white p-5 rounded-xl border border-muji-border shadow-sm">
+        <h3 class="text-sm font-semibold text-muji-text mb-3">📊 本月醉酒變美戰績統計</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+          <div class="p-3 rounded-lg bg-emerald-50 border border-emerald-100">
+            <div class="text-xs text-emerald-700">✨ 清醒變美</div>
+            <div id="statSober" class="text-xl font-bold text-emerald-800 mt-1">0</div>
+          </div>
+          <div class="p-3 rounded-lg bg-amber-50 border border-amber-100">
+            <div class="text-xs text-amber-700">🍹 喝茫請假</div>
+            <div id="statLeave" class="text-xl font-bold text-amber-800 mt-1">0</div>
+          </div>
+          <div class="p-3 rounded-lg bg-orange-50 border border-orange-100">
+            <div class="text-xs text-orange-700">🥴 微醺遲到</div>
+            <div id="statLate" class="text-xl font-bold text-orange-800 mt-1">0</div>
+          </div>
+          <div class="p-3 rounded-lg bg-red-50 border border-red-100">
+            <div class="text-xs text-red-700">🤪 發酒癲失聯</div>
+            <div id="statAbsent" class="text-xl font-bold text-red-800 mt-1">0</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ROLL CALL MODAL -->
+  <div id="rollCallModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl border border-muji-border max-w-md w-full p-6 shadow-xl space-y-4 transform transition-all">
+      <div class="flex justify-between items-center border-b border-muji-border pb-3">
+        <div>
+          <h3 id="modalTitle" class="font-bold text-base text-muji-text">日曆點名</h3>
+          <p id="modalSubTitle" class="text-xs text-muji-muted mt-0.5"></p>
+        </div>
+        <button onclick="closeModal()" class="text-muji-muted hover:text-muji-text text-xl font-bold">✕</button>
+      </div>
+
+      <!-- Roll Call Member Selector (if ALL is selected) -->
+      <div id="modalMemberSelectGroup" class="space-y-1">
+        <label class="text-xs font-semibold text-muji-muted">選擇點名對象：</label>
+        <select id="modalMemberSelect" class="w-full bg-muji-bg border border-muji-border px-3 py-2 rounded-lg text-sm text-muji-text focus:outline-none">
+          <!-- Dynamically populated -->
+        </select>
+      </div>
+
+      <!-- Status Options -->
+      <div class="space-y-2">
+        <label class="text-xs font-semibold text-muji-muted">選擇微醺變美狀態：</label>
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" onclick="selectStatus('sober')" id="statusBtn_sober" class="p-2.5 border border-muji-border rounded-xl text-xs font-semibold flex items-center space-x-2 transition">
+            <span class="w-3 h-3 rounded-full bg-emerald-600 inline-block"></span>
+            <span>✨ 清醒變美</span>
+          </button>
+          <button type="button" onclick="selectStatus('leave')" id="statusBtn_leave" class="p-2.5 border border-muji-border rounded-xl text-xs font-semibold flex items-center space-x-2 transition">
+            <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+            <span>🍹 喝茫請假</span>
+          </button>
+          <button type="button" onclick="selectStatus('late')" id="statusBtn_late" class="p-2.5 border border-muji-border rounded-xl text-xs font-semibold flex items-center space-x-2 transition">
+            <span class="w-3 h-3 rounded-full bg-orange-500 inline-block"></span>
+            <span>🥴 微醺遲到</span>
+          </button>
+          <button type="button" onclick="selectStatus('absent')" id="statusBtn_absent" class="p-2.5 border border-muji-border rounded-xl text-xs font-semibold flex items-center space-x-2 transition">
+            <span class="w-3 h-3 rounded-full bg-red-600 inline-block"></span>
+            <span>🤪 發酒癲失聯</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Note Input -->
+      <div class="space-y-1">
+        <label class="text-xs font-semibold text-muji-muted">醉酒事由 / 戰績備註：</label>
+        <input type="text" id="modalNote" placeholder="例：喝了2瓶紅酒、敷面膜中、發酒癲斷片" 
+               class="w-full bg-muji-bg border border-muji-border px-3 py-2 rounded-lg text-sm text-muji-text focus:outline-none focus:border-muji-accent">
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-between items-center pt-2">
+        <button onclick="clearRecord()" class="text-xs text-red-500 hover:underline">清除本日紀錄</button>
+        <div class="flex space-x-2">
+          <button onclick="closeModal()" class="px-4 py-2 border border-muji-border rounded-lg text-xs font-medium text-muji-muted hover:bg-muji-bg">取消</button>
+          <button onclick="saveRollCall()" class="px-5 py-2 bg-muji-accent text-white rounded-lg text-xs font-medium hover:opacity-90">保存並同步</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Application State ---
+    let appState = {
+      members: ['閨蜜A', '閨蜜B'],
+      records: {}, // Key: "YYYY-MM-DD", Value: { "memberName": { status: 'sober', note: '...' } }
+      currentYear: new Date().getFullYear(),
+      currentMonth: new Date().getMonth()
+    };
+
+    let selectedDateStr = '';
+    let currentSelectedStatus = 'sober';
+    let peer = null;
+    let connections = [];
+    let myRoomId = '';
+
+    // --- Core Initialization ---
+    window.addEventListener('DOMContentLoaded', () => {
+      loadLocalStorage();
+      setupPeerSync();
+      renderMembers();
+      renderCalendar();
+      checkUrlRoom();
+    });
+
+    // --- Local Storage Management ---
+    function loadLocalStorage() {
+      const saved = localStorage.getItem('drunk_friends_app_data');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.members) appState.members = parsed.members;
+          if (parsed.records) appState.records = parsed.records;
+        } catch(e) {
+          console.error(e);
+        }
+      }
+    }
+
+    function saveData(broadcast = true) {
+      localStorage.setItem('drunk_friends_app_data', JSON.stringify({
+        members: appState.members,
+        records: appState.records
+      }));
+
+      if (broadcast) {
+        broadcastState();
+      }
+    }
+
+    // --- Tab Switching ---
+    function switchTab(tabNum) {
+      const page1 = document.getElementById('page1');
+      const page2 = document.getElementById('page2');
+      const tab1Btn = document.getElementById('tab1Btn');
+      const tab2Btn = document.getElementById('tab2Btn');
+
+      if (tabNum === 1) {
+        page1.classList.remove('hidden');
+        page2.classList.add('hidden');
+        tab1Btn.className = "py-3 border-b-2 border-muji-accent text-muji-accent font-semibold transition";
+        tab2Btn.className = "py-3 border-b-2 border-transparent text-muji-muted hover:text-muji-text transition";
+      } else {
+        page1.classList.add('hidden');
+        page2.classList.remove('hidden');
+        tab2Btn.className = "py-3 border-b-2 border-muji-accent text-muji-accent font-semibold transition";
+        tab1Btn.className = "py-3 border-b-2 border-transparent text-muji-muted hover:text-muji-text transition";
+        renderCalendar();
+      }
+    }
+
+    // --- Member Management ---
+    function renderMembers() {
+      const memberList = document.getElementById('memberList');
+      const memberFilter = document.getElementById('memberFilter');
+      const memberCount = document.getElementById('memberCount');
+
+      memberCount.innerText = appState.members.length;
+      memberList.innerHTML = '';
+
+      if (appState.members.length === 0) {
+        memberList.innerHTML = `<span class="text-xs text-muji-muted">尚未新增任何酒精閨蜜，請在上方輸入框新增！</span>`;
+      } else {
+        appState.members.forEach((m) => {
+          const tag = document.createElement('div');
+          tag.className = "flex items-center space-x-1.5 px-3 py-1.5 bg-muji-bg border border-muji-border rounded-lg text-xs font-medium text-muji-text hover:border-red-300 transition cursor-pointer group";
+          tag.innerHTML = `
+            <span>🥂 ${escapeHtml(m)}</span>
+            <span onclick="deleteMember('${escapeHtml(m)}')" class="text-muji-muted group-hover:text-red-500 font-bold ml-1">×</span>
+          `;
+          memberList.appendChild(tag);
+        });
+      }
+
+      // Update Calendar Member Filter Dropdown
+      const currentVal = memberFilter.value;
+      memberFilter.innerHTML = `<option value="ALL">全體成員總覽</option>`;
+      appState.members.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.innerText = m;
+        memberFilter.appendChild(opt);
+      });
+      if (appState.members.includes(currentVal)) {
+        memberFilter.value = currentVal;
+      } else {
+        memberFilter.value = 'ALL';
+      }
+    }
+
+    function addMember() {
+      const input = document.getElementById('newMemberName');
+      const name = input.value.trim();
+      if (!name) return;
+      if (appState.members.includes(name)) {
+        alert('該成員名稱已存在！');
+        return;
+      }
+      appState.members.push(name);
+      input.value = '';
+      saveData();
+      renderMembers();
+    }
+
+    function deleteMember(name) {
+      if (confirm(`確定要移除酒精閨蜜「${name}」嗎？`)) {
+        appState.members = appState.members.filter(m => m !== name);
+        saveData();
+        renderMembers();
+        renderCalendar();
+      }
+    }
+
+    // --- Calendar Rendering & Navigation ---
+    function changeMonth(delta) {
+      appState.currentMonth += delta;
+      if (appState.currentMonth < 0) {
+        appState.currentMonth = 11;
+        appState.currentYear--;
+      } else if (appState.currentMonth > 11) {
+        appState.currentMonth = 0;
+        appState.currentYear++;
+      }
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      const grid = document.getElementById('calendarGrid');
+      const label = document.getElementById('currentMonthLabel');
+      const filter = document.getElementById('memberFilter').value;
+
+      grid.innerHTML = '';
+      label.innerText = `${appState.currentYear} 年 ${String(appState.currentMonth + 1).padStart(2, '0')} 月`;
+
+      const firstDay = new Date(appState.currentYear, appState.currentMonth, 1).getDay();
+      const daysInMonth = new Date(appState.currentYear, appState.currentMonth + 1, 0).getDate();
+
+      // Reset Monthly Stats
+      let statSober = 0, statLeave = 0, statLate = 0, statAbsent = 0;
+
+      // Blank Padding Cells
+      for (let i = 0; i < firstDay; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.className = "h-20 bg-muji-bg/30 rounded-xl border border-transparent";
+        grid.appendChild(emptyCell);
+      }
+
+      // Date Cells
+      const todayStr = new Date().toISOString().split('T')[0];
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${appState.currentYear}-${String(appState.currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const isToday = (dateStr === todayStr);
+
+        const cell = document.createElement('div');
+        cell.className = `relative h-20 p-1.5 rounded-xl border transition flex flex-col justify-between cursor-pointer select-none overflow-hidden ${
+          isToday ? 'bg-amber-50/50 border-amber-300' : 'bg-white border-muji-border hover:border-muji-accent'
+        }`;
+
+        // Top Row: Date Number
+        const topRow = document.createElement('div');
+        topRow.className = "flex justify-between items-center";
+        topRow.innerHTML = `
+          <span class="text-xs font-bold font-mono ${isToday ? 'text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded-md' : 'text-muji-text'}">${day}</span>
+        `;
+        cell.appendChild(topRow);
+
+        // Content Area for Attendance Badges
+        const contentArea = document.createElement('div');
+        contentArea.className = "flex-1 my-1 overflow-y-auto space-y-1 text-[10px]";
+
+        const dayRecord = appState.records[dateStr] || {};
+
+        if (filter === 'ALL') {
+          // Show indicators for all members
+          const keys = Object.keys(dayRecord);
+          if (keys.length > 0) {
+            keys.forEach(m => {
+              const rec = dayRecord[m];
+              const badge = createBadgeElement(m, rec.status, rec.note);
+              contentArea.appendChild(badge);
+
+              // Update Stats
+              if (rec.status === 'sober') statSober++;
+              if (rec.status === 'leave') statLeave++;
+              if (rec.status === 'late') statLate++;
+              if (rec.status === 'absent') statAbsent++;
+            });
+          }
+        } else {
+          // Show specific member status
+          const rec = dayRecord[filter];
+          if (rec) {
+            const badge = createBadgeElement(filter, rec.status, rec.note);
+            contentArea.appendChild(badge);
+
+            // Update Stats
+            if (rec.status === 'sober') statSober++;
+            if (rec.status === 'leave') statLeave++;
+            if (rec.status === 'late') statLate++;
+            if (rec.status === 'absent') statAbsent++;
+          }
+        }
+
+        cell.appendChild(contentArea);
+
+        // Progress Overlay for Long Press Feedback
+        const progress = document.createElement('div');
+        progress.className = "absolute bottom-0 left-0 h-1 bg-muji-accent w-0 progress-bar";
+        cell.appendChild(progress);
+
+        // Bind Long Press & Click Events
+        bindLongPress(cell, dateStr, progress);
+
+        grid.appendChild(cell);
+      }
+
+      // Update Monthly Statistics
+      document.getElementById('statSober').innerText = statSober;
+      document.getElementById('statLeave').innerText = statLeave;
+      document.getElementById('statLate').innerText = statLate;
+      document.getElementById('statAbsent').innerText = statAbsent;
+    }
+
+    function createBadgeElement(name, status, note) {
+      const div = document.createElement('div');
+      let bgColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+      let icon = '✨';
+
+      if (status === 'leave') {
+        bgColor = 'bg-amber-100 text-amber-800 border-amber-200';
+        icon = '🍹';
+      } else if (status === 'late') {
+        bgColor = 'bg-orange-100 text-orange-800 border-orange-200';
+        icon = '🥴';
+      } else if (status === 'absent') {
+        bgColor = 'bg-red-100 text-red-800 border-red-200';
+        icon = '🤪';
+      }
+
+      div.className = `px-1.5 py-0.5 rounded border ${bgColor} flex items-center justify-between truncate`;
+      div.title = note ? `${name}: ${note}` : name;
+      div.innerHTML = `
+        <span class="truncate">${icon} ${escapeHtml(name)}</span>
+        ${note ? `<span class="ml-0.5 text-[9px] opacity-75">💬</span>` : ''}
+      `;
+      return div;
+    }
+
+    // --- Long Press Detection Logic ---
+    function bindLongPress(element, dateStr, progressEl) {
+      let timer = null;
+      const pressDuration = 500; // 0.5 seconds
+
+      const startPress = (e) => {
+        element.classList.add('long-press-active');
+        progressEl.style.width = '100%';
+
+        timer = setTimeout(() => {
+          openRollCallModal(dateStr);
+          resetPress();
+        }, pressDuration);
+      };
+
+      const resetPress = () => {
+        clearTimeout(timer);
+        element.classList.remove('long-press-active');
+        progressEl.style.width = '0%';
+      };
+
+      element.addEventListener('touchstart', startPress, { passive: true });
+      element.addEventListener('touchend', resetPress);
+      element.addEventListener('touchcancel', resetPress);
+
+      element.addEventListener('mousedown', startPress);
+      element.addEventListener('mouseup', resetPress);
+      element.addEventListener('mouseleave', resetPress);
+    }
+
+    // --- Modal Logic ---
+    function openRollCallModal(dateStr) {
+      selectedDateStr = dateStr;
+      const modal = document.getElementById('rollCallModal');
+      const title = document.getElementById('modalTitle');
+      const subtitle = document.getElementById('modalSubTitle');
+      const filter = document.getElementById('memberFilter').value;
+      const memberSelectGroup = document.getElementById('modalMemberSelectGroup');
+      const memberSelect = document.getElementById('modalMemberSelect');
+
+      title.innerText = `📅 日曆點名: ${dateStr}`;
+
+      if (appState.members.length === 0) {
+        alert('請先在第一頁新增酒精閨蜜成員！');
+        return;
+      }
+
+      // Populate Modal Member Select Dropdown
+      memberSelect.innerHTML = '';
+      appState.members.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.innerText = m;
+        memberSelect.appendChild(opt);
+      });
+
+      if (filter !== 'ALL') {
+        memberSelect.value = filter;
+        memberSelectGroup.classList.add('hidden');
+        subtitle.innerText = `正在記錄朋友：${filter}`;
+      } else {
+        memberSelectGroup.classList.remove('hidden');
+        subtitle.innerText = `請選擇成員進行醉酒變美記錄`;
+      }
+
+      // Load existing record for selected date/member
+      loadModalFormData();
+
+      memberSelect.onchange = () => loadModalFormData();
+
+      modal.classList.remove('hidden');
+    }
+
+    function loadModalFormData() {
+      const memberName = document.getElementById('modalMemberSelect').value;
+      const dayRecord = appState.records[selectedDateStr] || {};
+      const memberRec = dayRecord[memberName];
+
+      if (memberRec) {
+        selectStatus(memberRec.status);
+        document.getElementById('modalNote').value = memberRec.note || '';
+      } else {
+        selectStatus('sober');
+        document.getElementById('modalNote').value = '';
+      }
+    }
+
+    function selectStatus(status) {
+      currentSelectedStatus = status;
+      ['sober', 'leave', 'late', 'absent'].forEach(s => {
+        const btn = document.getElementById(`statusBtn_${s}`);
+        if (s === status) {
+          btn.className = "p-2.5 border-2 border-muji-accent bg-muji-accentLight rounded-xl text-xs font-bold flex items-center space-x-2 transition";
+        } else {
+          btn.className = "p-2.5 border border-muji-border bg-white rounded-xl text-xs font-semibold flex items-center space-x-2 transition opacity-60";
+        }
+      });
+    }
+
+    function closeModal() {
+      document.getElementById('rollCallModal').classList.add('hidden');
+    }
+
+    function saveRollCall() {
+      const memberName = document.getElementById('modalMemberSelect').value;
+      const note = document.getElementById('modalNote').value.trim();
+
+      if (!appState.records[selectedDateStr]) {
+        appState.records[selectedDateStr] = {};
+      }
+
+      appState.records[selectedDateStr][memberName] = {
+        status: currentSelectedStatus,
+        note: note
+      };
+
+      saveData();
+      renderCalendar();
+      closeModal();
+    }
+
+    function clearRecord() {
+      const memberName = document.getElementById('modalMemberSelect').value;
+      if (appState.records[selectedDateStr] && appState.records[selectedDateStr][memberName]) {
+        delete appState.records[selectedDateStr][memberName];
+        if (Object.keys(appState.records[selectedDateStr]).length === 0) {
+          delete appState.records[selectedDateStr];
+        }
+        saveData();
+        renderCalendar();
+      }
+      closeModal();
+    }
+
+    // --- JSON Export / Import ---
+    function exportData() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+      const anchor = document.createElement('a');
+      anchor.setAttribute("href", dataStr);
+      anchor.setAttribute("download", `drunk_friends_backup_${new Date().toISOString().split('T')[0]}.json`);
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported.members && imported.records) {
+            appState.members = imported.members;
+            appState.records = imported.records;
+            saveData();
             renderMembers();
-            populatePersonDropdown();
             renderCalendar();
-        };
-
-        function loadFromStorage() {
-            try {
-                const savedMembers = localStorage.getItem('muji_drunk_members');
-                if (savedMembers) {
-                    members = JSON.parse(savedMembers);
-                } else {
-                    // 預設趣味範例朋友名單
-                    members = [
-                        { id: 'm_1', name: '美麗擔當 莉莉' },
-                        { id: 'm_2', name: '酒王 威廉' },
-                        { id: 'm_3', name: '酒癲戰術大師 Eva' }
-                    ];
-                    saveMembersToStorage();
-                }
-
-                const savedData = localStorage.getItem('muji_drunk_attendance_data');
-                if (savedData) {
-                    attendanceData = JSON.parse(savedData);
-                }
-            } catch (e) {
-                console.error("讀取 LocalStorage 發生錯誤:", e);
-            }
+            alert('匯入成功！數據已同步至本地。');
+          } else {
+            alert('檔案格式不正確！');
+          }
+        } catch(err) {
+          alert('解析 JSON 檔案失敗！');
         }
+      };
+      reader.readAsText(file);
+    }
 
-        function saveMembersToStorage() {
-            localStorage.setItem('muji_drunk_members', JSON.stringify(members));
-        }
+    // --- Realtime P2P Sync (PeerJS) ---
+    function setupPeerSync() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const targetRoom = urlParams.get('room');
 
-        function saveAttendanceToStorage() {
-            localStorage.setItem('muji_drunk_attendance_data', JSON.stringify(attendanceData));
-        }
+      if (targetRoom) {
+        myRoomId = targetRoom;
+        document.getElementById('roomIdDisplay').innerText = myRoomId;
+        connectToHost(targetRoom);
+      } else {
+        // Generate random room code
+        myRoomId = 'BEAUTY-' + Math.floor(1000 + Math.random() * 9000);
+        document.getElementById('roomIdDisplay').innerText = myRoomId;
+        initHostPeer();
+      }
+    }
 
-        function switchMainTab(tab) {
-            currentTab = tab;
-            const tabMembers = document.getElementById('tab-members');
-            const tabCalendar = document.getElementById('tab-calendar');
-            const navMembers = document.getElementById('nav-members');
-            const navCalendar = document.getElementById('nav-calendar');
+    function initHostPeer() {
+      peer = new Peer(myRoomId);
 
-            if (tab === 'members') {
-                tabMembers.classList.remove('hidden');
-                tabCalendar.classList.add('hidden');
-                navMembers.className = "px-4 py-1.5 rounded transition-all bg-muji-card text-muji-text shadow-xs";
-                navCalendar.className = "px-4 py-1.5 rounded transition-all text-muji-muted hover:text-muji-text";
-            } else {
-                tabMembers.classList.add('hidden');
-                tabCalendar.classList.remove('hidden');
-                navCalendar.className = "px-4 py-1.5 rounded transition-all bg-muji-card text-muji-text shadow-xs";
-                navMembers.className = "px-4 py-1.5 rounded transition-all text-muji-muted hover:text-muji-text";
-                
-                populatePersonDropdown();
-                renderCalendar();
-            }
-        }
+      peer.on('open', (id) => {
+        document.getElementById('syncStatusDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block";
+      });
 
-        function handleAddMember(e) {
-            e.preventDefault();
-            const input = document.getElementById('member-name-input');
-            const name = input.value.trim();
-            if (!name) return;
+      peer.on('connection', (conn) => {
+        connections.push(conn);
+        conn.on('open', () => {
+          // Send current state to newly connected client
+          conn.send({ type: 'STATE_UPDATE', data: appState });
+        });
 
-            const newMember = {
-                id: 'm_' + Date.now() + '_' + Math.floor(Math.random()*1000),
-                name: name
-            };
-
-            members.push(newMember);
-            saveMembersToStorage();
-            input.value = '';
+        conn.on('data', (data) => {
+          if (data.type === 'STATE_UPDATE') {
+            appState = data.data;
+            saveData(false); // Don't broadcast loop
             renderMembers();
-            populatePersonDropdown();
-        }
-
-        function deleteMember(id) {
-            if (confirm('確定要將這位朋友從點名簿中移除嗎？')) {
-                members = members.filter(m => m.id !== id);
-                saveMembersToStorage();
-                renderMembers();
-                populatePersonDropdown();
-            }
-        }
-
-        function viewMemberCalendar(id) {
-            selectedPersonId = id;
-            switchMainTab('calendar');
-        }
-
-        function renderMembers() {
-            const grid = document.getElementById('member-grid');
-            const emptyNotice = document.getElementById('member-empty-notice');
-            const countTag = document.getElementById('member-count-tag');
-
-            countTag.innerText = `${members.length} 位朋友`;
-
-            if (members.length === 0) {
-                grid.innerHTML = '';
-                emptyNotice.classList.remove('hidden');
-                return;
-            }
-
-            emptyNotice.classList.add('hidden');
-            grid.innerHTML = members.map((m, idx) => `
-                <div class="bg-muji-bg border border-muji-border rounded p-3.5 flex items-center justify-between hover:border-muji-text transition-colors">
-                    <div class="flex items-center gap-3">
-                        <span class="text-xs font-serif text-muji-muted w-5 text-center">${String(idx + 1).padStart(2, '0')}</span>
-                        <span class="text-sm font-medium text-muji-text font-serif">${escapeHtml(m.name)}</span>
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <button onclick="viewMemberCalendar('${m.id}')" title="查看個人戰績" class="text-xs text-muji-muted hover:text-muji-text px-2 py-1 rounded hover:bg-muji-subbg transition-colors">
-                            <i class="fa-regular fa-calendar-days"></i>
-                        </button>
-                        <button onclick="deleteMember('${m.id}')" title="刪除" class="text-xs text-muji-muted hover:text-muji-accent px-2 py-1 rounded hover:bg-muji-subbg transition-colors">
-                            <i class="fa-regular fa-trash-can"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function populatePersonDropdown() {
-            const select = document.getElementById('person-select');
-            let html = `<option value="ALL">全體姐妹酒友 (總覽)</option>`;
-            members.forEach(m => {
-                html += `<option value="${m.id}" ${selectedPersonId === m.id ? 'selected' : ''}>${escapeHtml(m.name)}</option>`;
-            });
-            select.innerHTML = html;
-        }
-
-        function handlePersonChange(val) {
-            selectedPersonId = val;
             renderCalendar();
-        }
+          }
+        });
+      });
+    }
 
+    function connectToHost(hostId) {
+      peer = new Peer();
 
-        function changeMonth(delta) {
-            calendarMonth += delta;
-            if (calendarMonth > 11) {
-                calendarMonth = 0;
-                calendarYear++;
-            } else if (calendarMonth < 0) {
-                calendarMonth = 11;
-                calendarYear--;
-            }
+      peer.on('open', () => {
+        const conn = peer.connect(hostId);
+        connections.push(conn);
+
+        conn.on('open', () => {
+          document.getElementById('syncStatusDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block";
+        });
+
+        conn.on('data', (data) => {
+          if (data.type === 'STATE_UPDATE') {
+            appState = data.data;
+            localStorage.setItem('drunk_friends_app_data', JSON.stringify({
+              members: appState.members,
+              records: appState.records
+            }));
+            renderMembers();
             renderCalendar();
+          }
+        });
+      });
+    }
+
+    function broadcastState() {
+      connections.forEach(conn => {
+        if (conn.open) {
+          conn.send({ type: 'STATE_UPDATE', data: appState });
         }
+      });
+    }
 
-        function goToToday() {
-            const now = new Date();
-            calendarYear = now.getFullYear();
-            calendarMonth = now.getMonth();
-            renderCalendar();
-        }
+    function copyShareLink() {
+      const shareUrl = `${window.location.origin}${window.location.pathname}?room=${myRoomId}`;
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        alert(`已複製共享連結！\n將此連結發給朋友，大家就能進入同一個房間（${myRoomId}）即時同步點名：\n${shareUrl}`);
+      }).catch(() => {
+        prompt("請複製以下連結發給朋友：", shareUrl);
+      });
+    }
 
-        function renderCalendar() {
-            const titleEl = document.getElementById('calendar-title');
-            const gridEl = document.getElementById('calendar-grid');
+    function checkUrlRoom() {
+      // Handled in setupPeerSync
+    }
 
-            titleEl.innerText = `${calendarYear}年 ${String(calendarMonth + 1).padStart(2, '0')}月`;
-
-            const firstDayIndex = new Date(calendarYear, calendarMonth, 1).getDay();
-            const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
-            const daysInPrevMonth = new Date(calendarYear, calendarMonth, 0).getDate();
-
-            const todayStr = formatDateKey(new Date());
-
-            let html = '';
-
-            // 上月空白補位
-            for (let i = firstDayIndex - 1; i >= 0; i--) {
-                const day = daysInPrevMonth - i;
-                html += `<div class="bg-muji-subbg/30 text-muji-muted/40 rounded p-1.5 min-h-[70px] sm:min-h-[85px] border border-transparent select-none pointer-events-none">
-                    <span class="text-[11px] font-serif">${day}</span>
-                </div>`;
-            }
-
-            // 月統計歸零
-            let statPresent = 0, statLeave = 0, statLate = 0, statAbsent = 0;
-
-            // 當月日期繪製
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dateKey = `${calendarYear}-${String(calendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const isToday = dateKey === todayStr;
-
-                const dayRecords = attendanceData[dateKey] || {};
-
-                let contentHtml = '';
-
-                if (selectedPersonId !== 'ALL') {
-                    // 個人模式
-                    const rec = dayRecords[selectedPersonId];
-                    if (rec) {
-                        const typeInfo = STATUS_TYPES[rec.status] || STATUS_TYPES['present'];
-                        // 統計累加
-                        if (rec.status === 'present') statPresent++;
-                        else if (rec.status === 'leave') statLeave++;
-                        else if (rec.status === 'late') statLate++;
-                        else if (rec.status === 'absent') statAbsent++;
-
-                        contentHtml = `
-                            <div class="mt-1 space-y-0.5">
-                                <span class="inline-block text-[10px] font-medium px-1.5 py-0.5 rounded border ${typeInfo.badge}">
-                                    ${typeInfo.label}
-                                </span>
-                                ${rec.note ? `<p class="text-[10px] text-muji-muted truncate" title="${escapeHtml(rec.note)}">${escapeHtml(rec.note)}</p>` : ''}
-                            </div>
-                        `;
-                    }
-                } else {
-                    // 總覽模式
-                    const recKeys = Object.keys(dayRecords);
-                    if (recKeys.length > 0) {
-                        let p = 0, l = 0, lt = 0, a = 0;
-                        recKeys.forEach(mId => {
-                            const st = dayRecords[mId].status;
-                            if (st === 'present') { p++; statPresent++; }
-                            else if (st === 'leave') { l++; statLeave++; }
-                            else if (st === 'late') { lt++; statLate++; }
-                            else if (st === 'absent') { a++; statAbsent++; }
-                        });
-
-                        contentHtml = `
-                            <div class="mt-1 flex flex-wrap gap-1">
-                                ${p > 0 ? `<span class="w-2 h-2 rounded-full bg-muji-present" title="清醒變美:${p}"></span>` : ''}
-                                ${l > 0 ? `<span class="w-2 h-2 rounded-full bg-muji-leave" title="喝茫請假:${l}"></span>` : ''}
-                                ${lt > 0 ? `<span class="w-2 h-2 rounded-full bg-muji-late" title="微醺遲到:${lt}"></span>` : ''}
-                                ${a > 0 ? `<span class="w-2 h-2 rounded-full bg-muji-absent" title="發酒癲失聯:${a}"></span>` : ''}
-                            </div>
-                            <div class="text-[9px] text-muji-muted mt-1">已記錄 ${recKeys.length}/${members.length}</div>
-                        `;
-                    }
-                }
-
-                html += `
-                    <div class="calendar-cell relative bg-muji-card hover:bg-muji-subbg/50 rounded p-1.5 sm:p-2 min-h-[70px] sm:min-h-[85px] border ${isToday ? 'border-muji-accent ring-1 ring-muji-accent/30' : 'border-muji-border'} 
-                         transition-all cursor-pointer flex flex-col justify-between overflow-hidden select-none"
-                         data-date="${dateKey}"
-                         onmousedown="startPress(event, '${dateKey}')"
-                         onmouseup="endPress(event, '${dateKey}')"
-                         onmouseleave="cancelPress(event)"
-                         ontouchstart="startPress(event, '${dateKey}')"
-                         ontouchend="endPress(event, '${dateKey}')"
-                         ontouchcancel="cancelPress(event)">
-                        
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs font-serif ${isToday ? 'font-bold text-muji-accent' : 'text-muji-text'}">${day}</span>
-                        </div>
-
-                        ${contentHtml}
-
-                        <!-- 長按指示條 -->
-                        <div class="press-indicator"></div>
-                    </div>
-                `;
-            }
-
-            // 下月空白補位
-            const totalCells = firstDayIndex + daysInMonth;
-            const nextDays = (totalCells > 35 ? 42 : 35) - totalCells;
-            for (let i = 1; i <= nextDays; i++) {
-                html += `<div class="bg-muji-subbg/30 text-muji-muted/40 rounded p-1.5 min-h-[70px] sm:min-h-[85px] border border-transparent select-none pointer-events-none">
-                    <span class="text-[11px] font-serif">${i}</span>
-                </div>`;
-            }
-
-            gridEl.innerHTML = html;
-
-            // 更新戰況統計
-            document.getElementById('stat-present').innerText = statPresent;
-            document.getElementById('stat-leave').innerText = statLeave;
-            document.getElementById('stat-late').innerText = statLate;
-            document.getElementById('stat-absent').innerText = statAbsent;
-        }
-
-
-        function startPress(e, dateKey) {
-            isLongPressed = false;
-            pressTarget = e.currentTarget;
-            pressTarget.classList.add('is-pressing');
-
-            pressTimer = setTimeout(() => {
-                isLongPressed = true;
-                if (pressTarget) pressTarget.classList.remove('is-pressing');
-                openModal(dateKey);
-            }, 450);
-        }
-
-        function endPress(e, dateKey) {
-            if (pressTimer) {
-                clearTimeout(pressTimer);
-                pressTimer = null;
-            }
-            if (pressTarget) {
-                pressTarget.classList.remove('is-pressing');
-            }
-
-            if (!isLongPressed && pressTarget) {
-                openModal(dateKey);
-            }
-            pressTarget = null;
-        }
-
-        function cancelPress(e) {
-            if (pressTimer) {
-                clearTimeout(pressTimer);
-                pressTimer = null;
-            }
-            if (pressTarget) {
-                pressTarget.classList.remove('is-pressing');
-                pressTarget = null;
-            }
-        }
-
-
-        function openModal(dateKey) {
-            activeModalDate = dateKey;
-            document.getElementById('modal-date-title').innerText = `${dateKey} 酒癲與變美紀錄`;
-
-            const existingDayData = attendanceData[dateKey] || {};
-            tempModalState = {};
-
-            members.forEach(m => {
-                if (existingDayData[m.id]) {
-                    tempModalState[m.id] = { ...existingDayData[m.id] };
-                } else {
-                    tempModalState[m.id] = { status: 'present', note: '' };
-                }
-            });
-
-            renderModalBody();
-
-            const modal = document.getElementById('attendance-modal');
-            const modalContent = document.getElementById('modal-content');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modalContent.classList.remove('scale-95');
-                modalContent.classList.add('scale-100');
-            }, 10);
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('attendance-modal');
-            const modalContent = document.getElementById('modal-content');
-            modal.classList.add('opacity-0');
-            modalContent.classList.remove('scale-100');
-            modalContent.classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 200);
-        }
-
-        function updateTempStatus(memberId, status) {
-            if (!tempModalState[memberId]) tempModalState[memberId] = { status: 'present', note: '' };
-            tempModalState[memberId].status = status;
-            renderModalBody();
-        }
-
-        function updateTempNote(memberId, note) {
-            if (!tempModalState[memberId]) tempModalState[memberId] = { status: 'present', note: '' };
-            tempModalState[memberId].note = note;
-        }
-
-        function renderModalBody() {
-            const container = document.getElementById('modal-body-container');
-
-            if (members.length === 0) {
-                container.innerHTML = `<div class="text-center py-6 text-xs text-muji-muted">尚無朋友名冊，請先至第一頁「朋友名冊」新增閨蜜！</div>`;
-                return;
-            }
-
-            container.innerHTML = members.map(m => {
-                const state = tempModalState[m.id] || { status: 'present', note: '' };
-
-                return `
-                    <div class="bg-muji-bg border border-muji-border rounded p-3 space-y-2">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                            <span class="text-xs font-serif font-bold text-muji-text flex items-center gap-1.5">
-                                🥂 ${escapeHtml(m.name)}
-                            </span>
-                            
-                            <!-- 狀態切換按鈕 -->
-                            <div class="flex items-center gap-1 bg-muji-card p-0.5 rounded border border-muji-border overflow-x-auto">
-                                ${Object.keys(STATUS_TYPES).map(stKey => {
-                                    const st = STATUS_TYPES[stKey];
-                                    const isSel = state.status === stKey;
-                                    return `
-                                        <button type="button" onclick="updateTempStatus('${m.id}', '${stKey}')"
-                                                class="px-2 py-1 rounded text-[10px] transition-all font-medium whitespace-nowrap ${isSel ? 'bg-muji-text text-white shadow-xs' : 'text-muji-muted hover:text-muji-text'}">
-                                            ${st.label}
-                                        </button>
-                                    `;
-                                }).join('')}
-                            </div>
-                        </div>
-
-                        <!-- 戰績備註輸入框 -->
-                        <input type="text" placeholder="戰績/醉酒事由（如：喝了三瓶香檳、敷面膜變美）" 
-                               value="${escapeHtml(state.note || '')}"
-                               onchange="updateTempNote('${m.id}', this.value)"
-                               class="w-full bg-muji-card border border-muji-border rounded px-2.5 py-1 text-[11px] text-muji-text placeholder:text-muji-muted/50 focus:outline-none focus:border-muji-text">
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function saveAttendanceRecord() {
-            if (!activeModalDate) return;
-
-            attendanceData[activeModalDate] = { ...tempModalState };
-            saveAttendanceToStorage();
-            closeModal();
-            renderCalendar();
-        }
-
-
-        function exportData() {
-            const backupObj = {
-                members: members,
-                attendanceData: attendanceData,
-                exportAt: new Date().toISOString()
-            };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `friends_drunk_backup_${formatDateKey(new Date())}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-        }
-
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if (imported.members && imported.attendanceData) {
-                        members = imported.members;
-                        attendanceData = imported.attendanceData;
-                        saveMembersToStorage();
-                        saveAttendanceToStorage();
-                        renderMembers();
-                        populatePersonDropdown();
-                        renderCalendar();
-                        alert('成功還原酒友戰績備份！');
-                    } else {
-                        alert('備份檔案格式不正確。');
-                    }
-                } catch (err) {
-                    alert('無法讀取檔案，請確認為有效的 JSON 備份檔。');
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        /* 輔助工具 */
-        function formatDateKey(dateObj) {
-            const y = dateObj.getFullYear();
-            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const d = String(dateObj.getDate()).padStart(2, '0');
-            return `${y}-${m}-${d}`;
-        }
-
-        function escapeHtml(str) {
-            return String(str).replace(/[&<>"']/g, function(m) {
-                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
-            });
-        }
-    </script>
+    // --- Helper Functions ---
+    function escapeHtml(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+  </script>
 </body>
 </html>
