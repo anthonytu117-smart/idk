@@ -176,9 +176,10 @@
         </div>
       </div>
 
-      <!-- Long Press Guide -->
-      <div class="bg-japandi-primaryLight p-3 rounded-xl border border-japandi-primary/20 text-xs text-japandi-primary flex items-center justify-between">
-        <span>💡 <b>長按提示：</b>在日曆格子上<b>長按 0.5 秒</b>即可發動醉酒點名、備註與上傳照片！</span>
+      <!-- Long Press & Double Click Guide -->
+      <div class="bg-japandi-primaryLight p-3 rounded-xl border border-japandi-primary/20 text-xs text-japandi-primary flex flex-col sm:flex-row gap-1 justify-between">
+        <span>💡 <b>雙擊日期：</b>查看當日完整回憶與大相片！</span>
+        <span>⏱️ <b>長按 0.5 秒：</b>發動醉酒點名與上傳相片</span>
       </div>
 
       <!-- Calendar Grid -->
@@ -226,7 +227,45 @@
 
   </main>
 
-  <!-- ROLL CALL & MEMORY MODAL -->
+  <!-- VIEW DETAIL MODAL (NEW: 雙擊檢閱詳細資料) -->
+  <div id="viewDetailModal" class="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-[#FAF8F5] rounded-3xl border border-japandi-border max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-japandi-border pb-3">
+        <div>
+          <h3 id="viewDetailTitle" class="font-bold text-base text-japandi-text">當日檢閱回憶錄</h3>
+          <p id="viewDetailSubtitle" class="text-xs text-japandi-muted mt-0.5"></p>
+        </div>
+        <button onclick="closeViewDetailModal()" class="text-japandi-muted hover:text-japandi-text text-xl font-bold">✕</button>
+      </div>
+
+      <!-- Photo Display Area -->
+      <div id="viewDetailPhotoBox" class="hidden space-y-1">
+        <label class="text-xs font-semibold text-japandi-muted">📷 當日現場照 / 醉酒回憶照片：</label>
+        <div class="w-full rounded-2xl overflow-hidden border border-japandi-border bg-black/5 flex items-center justify-center">
+          <img id="viewDetailImg" src="" class="max-h-80 w-full object-contain">
+        </div>
+      </div>
+
+      <!-- Records List -->
+      <div class="space-y-2">
+        <label class="text-xs font-semibold text-japandi-muted">📋 成員醉酒狀態與事由：</label>
+        <div id="viewDetailList" class="space-y-2">
+          <!-- Dynamically Populated -->
+        </div>
+      </div>
+
+      <div class="flex justify-between items-center pt-3 border-t border-japandi-border">
+        <button onclick="switchToEditFromView()" class="px-4 py-2 bg-japandi-accent text-white rounded-xl text-xs font-semibold hover:opacity-90 transition">
+          ✏️ 進行點名 / 編輯紀錄
+        </button>
+        <button onclick="closeViewDetailModal()" class="px-4 py-2 border border-japandi-border rounded-xl text-xs font-medium text-japandi-muted hover:bg-japandi-bg">
+          關閉
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROLL CALL & MEMORY MODAL (EDIT) -->
   <div id="rollCallModal" class="fixed inset-0 bg-black/30 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-[#FAF8F5] rounded-3xl border border-japandi-border max-w-md w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-japandi-border pb-3">
@@ -538,7 +577,8 @@
         progress.className = "absolute bottom-0 left-0 h-0.5 bg-japandi-accent w-0 progress-bar z-20";
         cell.appendChild(progress);
 
-        bindLongPress(cell, dateStr, progress);
+        // 綁定長按與雙擊事件
+        bindInteractions(cell, dateStr, progress);
         grid.appendChild(cell);
       }
 
@@ -563,18 +603,19 @@
       return div;
     }
 
-    // --- Long Press Handler ---
-    function bindLongPress(element, dateStr, progressEl) {
+    // --- Interaction Handler: Long Press & Double Click ---
+    function bindInteractions(element, dateStr, progressEl) {
       let timer = null;
-      const duration = 500;
+      let lastTapTime = 0;
+      const longPressDuration = 500;
 
-      const start = () => {
+      const start = (e) => {
         element.classList.add('long-press-active');
         progressEl.style.width = '100%';
         timer = setTimeout(() => {
-          openRollCallModal(dateStr);
+          openRollCallModal(dateStr); // 長按 0.5 秒發動點名
           reset();
-        }, duration);
+        }, longPressDuration);
       };
 
       const reset = () => {
@@ -583,15 +624,93 @@
         progressEl.style.width = '0%';
       };
 
-      element.addEventListener('touchstart', start, { passive: true });
-      element.addEventListener('touchend', reset);
+      const handleTap = (e) => {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTapTime;
+
+        if (tapLength < 300 && tapLength > 0) {
+          // 雙擊 (Double Click) 偵測成功！
+          e.preventDefault();
+          reset();
+          openViewDetailModal(dateStr); // 開啟當日詳細視窗
+        }
+        lastTapTime = currentTime;
+      };
+
+      element.addEventListener('touchstart', (e) => { start(e); }, { passive: true });
+      element.addEventListener('touchend', (e) => { reset(); handleTap(e); });
       element.addEventListener('touchcancel', reset);
       element.addEventListener('mousedown', start);
-      element.addEventListener('mouseup', reset);
+      element.addEventListener('mouseup', (e) => { reset(); handleTap(e); });
       element.addEventListener('mouseleave', reset);
     }
 
-    // --- Modal Handler ---
+    // --- VIEW DETAIL MODAL HANDLER (雙擊檢閱詳細資料) ---
+    function openViewDetailModal(dateStr) {
+      selectedDateStr = dateStr;
+      const modal = document.getElementById('viewDetailModal');
+      const title = document.getElementById('viewDetailTitle');
+      const subtitle = document.getElementById('viewDetailSubtitle');
+      const photoBox = document.getElementById('viewDetailPhotoBox');
+      const photoImg = document.getElementById('viewDetailImg');
+      const listContainer = document.getElementById('viewDetailList');
+
+      title.innerText = `📅 當日回憶詳情: ${dateStr}`;
+      listContainer.innerHTML = '';
+
+      const dayRecord = appState.records[dateStr] || {};
+      const membersWithRecord = Object.keys(dayRecord);
+
+      let foundPhoto = null;
+
+      if (membersWithRecord.length === 0) {
+        subtitle.innerText = '當日尚無任何點名或發酒癲紀錄';
+        listContainer.innerHTML = `<div class="p-4 text-center text-xs text-japandi-muted bg-japandi-bg rounded-2xl border border-japandi-border">本日空空如也~ 可以雙擊或長按進行點名！</div>`;
+      } else {
+        subtitle.innerText = `共有 ${membersWithRecord.length} 位朋友記錄了戰績`;
+        membersWithRecord.forEach(m => {
+          const rec = dayRecord[m];
+          if (rec.photo && !foundPhoto) foundPhoto = rec.photo;
+
+          let statusLabel = '✨ 清醒變美';
+          let badgeStyle = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+          if (rec.status === 'leave') { statusLabel = '🍹 喝茫請假'; badgeStyle = 'bg-amber-100 text-amber-800 border-amber-200'; }
+          if (rec.status === 'late') { statusLabel = '🥴 微醺遲到'; badgeStyle = 'bg-orange-100 text-orange-800 border-orange-200'; }
+          if (rec.status === 'absent') { statusLabel = '🤪 發酒癲失聯'; badgeStyle = 'bg-red-100 text-red-800 border-red-200'; }
+
+          const card = document.createElement('div');
+          card.className = "p-3.5 bg-japandi-bg border border-japandi-border rounded-2xl space-y-1 text-xs";
+          card.innerHTML = `
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-japandi-text">${escapeHtml(m)}</span>
+              <span class="px-2 py-0.5 rounded-lg border font-semibold text-[11px] ${badgeStyle}">${statusLabel}</span>
+            </div>
+            ${rec.note ? `<p class="text-japandi-muted text-[11px] bg-white/70 p-2 rounded-xl border border-japandi-border/50">💬 ${escapeHtml(rec.note)}</p>` : ''}
+          `;
+          listContainer.appendChild(card);
+        });
+      }
+
+      if (foundPhoto) {
+        photoImg.src = foundPhoto;
+        photoBox.classList.remove('hidden');
+      } else {
+        photoBox.classList.add('hidden');
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeViewDetailModal() {
+      document.getElementById('viewDetailModal').classList.add('hidden');
+    }
+
+    function switchToEditFromView() {
+      closeViewDetailModal();
+      openRollCallModal(selectedDateStr);
+    }
+
+    // --- ROLL CALL EDIT MODAL HANDLER ---
     function openRollCallModal(dateStr) {
       selectedDateStr = dateStr;
       const modal = document.getElementById('rollCallModal');
